@@ -1,5 +1,5 @@
 # Referral Board
-A referral network for top tech companies to get referral from verified professionals.
+A referral network to get referral from verified professionals.
 
 ## Team members
 - [Siddhesh Patil](https://github.com/haxxorsid)

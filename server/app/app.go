@@ -8,6 +8,7 @@ import (
 	"github.com/haxxorsid/referralboard-private/server/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"github.com/gorilla/mux"
 )
 
@@ -28,7 +29,11 @@ func (a *App) Initialize(config *config.Config) {
 		config.DB.Sslmode,
 		config.DB.TimeZone)
 
-		database, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{})
+		database, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix:   "app.", // schema name
+				SingularTable: false,
+			}})
 	
 		if err != nil {
 			panic("Failed to connect to database!")

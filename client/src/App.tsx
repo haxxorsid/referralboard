@@ -13,7 +13,6 @@ import { cardType } from "./types";
 
 import EditProfile from "./components/EditProfile/EditProfile";
 
-import ForgotPassword from "./components/ForgotPassword";
 
 export default function App() {
   const [cards, setCards] = useState<cardType[]>([])
@@ -36,7 +35,7 @@ export default function App() {
           <Route path="/home" element={<TempHome cards={cards}/>} />
          
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+     
           <Route path="/edit-profile" element={<EditProfile />} />
        
         </Routes>

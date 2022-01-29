@@ -1,15 +1,18 @@
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
-import Login from "./components/Login";
-import Home from "./components/Home";
+
+import Register from "./components/Register";
+import TempHome from "./components/TempHome";
 import './App.css';
 import { useEffect, useState } from 'react';
 import { getCards } from './common/apiService';
 import { cardType } from "./types";
+
+import EditProfile from "./components/EditProfile/EditProfile";
+
 
 export default function App() {
   const [cards, setCards] = useState<cardType[]>([])
@@ -28,30 +31,14 @@ export default function App() {
 
   return (
     <Router>
-      <div className="App">
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
-        </ul>
-
-        <hr />
-
-        {/*
-          A <Switch> looks through all its children <Route>
-          elements and renders the first one whose path
-          matches the current URL. Use a <Switch> any time
-          you have multiple routes, but you want only one
-          of them to render at a time
-        */}
         <Routes>
-          <Route path="/" element={<Home cards={cards}/>} />
-          <Route path="/about" element={<Login />} />
+          <Route path="/home" element={<TempHome cards={cards}/>} />
+         
+          <Route path="/register" element={<Register />} />
+     
+          <Route path="/edit-profile" element={<EditProfile />} />
+       
         </Routes>
-      </div>
     </Router>
   );
 }

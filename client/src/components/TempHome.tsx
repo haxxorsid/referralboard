@@ -1,7 +1,6 @@
 import { cardType } from '../types';
-import './Home.css';
 
-export default function Home(props: { cards: cardType[]; }) {
+export default function TempHome(props: { cards: cardType[]; }) {
     return (
       <div>
         <h2>Home</h2>

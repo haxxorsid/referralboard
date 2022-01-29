@@ -150,11 +150,7 @@ export default function Register() {
                   Back to login?
                 </Link>
               </Grid>
-              <Grid item>
-                <Link component={RouterLink} to="/forgot-password" variant="body2">
-                  Forgot Password?
-                </Link>
-              </Grid>
+
             </Grid>
           </Box>
         </Box>

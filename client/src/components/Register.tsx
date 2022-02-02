@@ -1,9 +1,24 @@
 import * as React from 'react';
-import {Avatar, Button, TextField, CssBaseline, Link, Grid, Box, Typography, Container, SelectChangeEvent, MenuItem, Select, InputLabel, FormControl} from '@mui/material';
-import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import {
+  Avatar,
+  Button,
+  TextField,
+  CssBaseline,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  SelectChangeEvent,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import { ThemeProvider } from '@mui/material/styles';
-import {Link as RouterLink} from 'react-router-dom';
-import {theme} from '../common/theme';
+import { Link as RouterLink } from 'react-router-dom';
+import { theme } from '../common/theme';
 
 export default function Register() {
   const [yoe, setYoe] = React.useState('');
@@ -25,7 +40,7 @@ export default function Register() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component='main' maxWidth='xs'>
         <CssBaseline />
         <Box
           sx={{
@@ -38,75 +53,80 @@ export default function Register() {
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <AppRegistrationIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component='h1' variant='h5'>
             Register
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box
+            component='form'
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="firstname"
-              label="First Name"
-              name="firstname"
-              autoComplete="firstname"
+              id='firstname'
+              label='First Name'
+              name='firstname'
+              autoComplete='firstname'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="lastname"
-              label="Last Name"
-              name="lastname"
-              autoComplete="lastname"
+              id='lastname'
+              label='Last Name'
+              name='lastname'
+              autoComplete='lastname'
             />
             <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="location"
-            label="Current Location"
-            name="location"
-            autoComplete="location"
-            />
-            <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="company"
-              label="Current Company Name"
-              name="company"
-              autoComplete="company"
+              id='location'
+              label='Current Location'
+              name='location'
+              autoComplete='location'
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="position"
-              label="Current Position Title"
-              name="position"
-              autoComplete="position"
+              id='company'
+              label='Current Company Name'
+              name='company'
+              autoComplete='company'
+            />
+            <TextField
+              margin='normal'
+              required
+              fullWidth
+              id='position'
+              label='Current Position Title'
+              name='position'
+              autoComplete='position'
               autoFocus
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="school"
-              label="School"
-              name="school"
-              autoComplete="school"
+              id='school'
+              label='School'
+              name='school'
+              autoComplete='school'
             />
-            <FormControl fullWidth sx={{my: [2, 2]}}>
-              <InputLabel id="yoe-label">Years of Experience</InputLabel>
+            <FormControl fullWidth sx={{ my: [2, 2] }}>
+              <InputLabel id='yoe-label'>Years of Experience</InputLabel>
               <Select
-              labelId="yoe-label"
-              required
-              id="yoe"
-              value={yoe}
-              label="Years of Experience"
-              onChange={handleChange}
+                labelId='yoe-label'
+                required
+                id='yoe'
+                value={yoe}
+                label='Years of Experience'
+                onChange={handleChange}
               >
                 <MenuItem value={1}>0 Years / Student / Intern</MenuItem>
                 <MenuItem value={2}>0 - 1 Years</MenuItem>
@@ -115,42 +135,41 @@ export default function Register() {
                 <MenuItem value={5}>5 - 7 Years</MenuItem>
                 <MenuItem value={6}>7 - 10 Years</MenuItem>
                 <MenuItem value={7}>10+ Years</MenuItem>
-                </Select>
+              </Select>
             </FormControl>
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id='email'
+              label='Email Address'
+              name='email'
+              autoComplete='email'
             />
             <TextField
-              margin="normal"
+              margin='normal'
               required
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name='password'
+              label='Password'
+              type='password'
+              id='password'
+              autoComplete='current-password'
             />
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="contained"
+              variant='contained'
               sx={{ mt: 3, mb: 2 }}
             >
               Register
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link component={RouterLink} to="/login" variant="body2">
+                <Link component={RouterLink} to='/login' variant='body2'>
                   Back to login?
                 </Link>
               </Grid>
-
             </Grid>
           </Box>
         </Box>

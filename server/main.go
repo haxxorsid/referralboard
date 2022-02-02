@@ -10,5 +10,6 @@ func main() {
 
 	app := &app.App{}
 	app.Initialize(config)
+	app.SetUpDB()
 	app.Run(":5555")
 }

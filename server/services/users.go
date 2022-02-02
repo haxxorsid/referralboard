@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/models"
 	"gorm.io/gorm"
 )
 

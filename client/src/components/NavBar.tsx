@@ -23,6 +23,14 @@ export default function NavBar() {
             >
               Home
             </Link>
+            <Link component={RouterLink} to="/posts"
+              variant="button"
+              color="text.primary"
+              sx={{ my: 1, mx: 1.5 }}
+              underline="none"
+            >
+              Requests
+            </Link>
             <Link component={RouterLink} to="/edit-profile"
               variant="button"
               color="text.primary"

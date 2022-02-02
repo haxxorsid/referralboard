@@ -1,4 +1,4 @@
-module github.com/haxxorsid/referralboard-private/server
+module github.com/haxxorsid/referralboard/server
 
 go 1.17
 

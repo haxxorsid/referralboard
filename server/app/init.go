@@ -3,7 +3,7 @@ package app
 import (
 	"time"
 
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/models"
 )
 
 func (a *App) SetUpDB() {

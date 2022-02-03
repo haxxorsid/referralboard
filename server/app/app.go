@@ -44,7 +44,7 @@ func (a *App) Initialize(config *config.Config) {
 	fmt.Println("Connected to db")
 
 	a.DB = database
-	a.Router = mux.NewRouter()
+	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
 	a.setRouters()
 }
 
@@ -65,6 +65,41 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/users/newuser", a.AddUser).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/users/{id}", a.UpdateUserById).Methods("PUT", "OPTIONS")
 
+	// Routes for Posts
+	a.Router.HandleFunc("/posts", a.GetAllPosts).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/posts/newpost", a.AddPost).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/posts/{id}", a.DeletePost).Methods("DELETE", "OPTIONS")
+}
+
+// Wrap the get all post method
+func (a *App) GetAllPosts(w http.ResponseWriter, r *http.Request) {
+	services.GetAllPosts(a.DB, w, r)
+}
+
+// Wrap the add new post method
+func (a *App) AddPost(w http.ResponseWriter, r *http.Request) {
+	var post models.Post
+	err := json.NewDecoder(r.Body).Decode(&post)
+	CheckError(err)
+	newPost, er := services.AddPost(a.DB, post)
+	if er != nil {
+		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add post")
+	} else {
+		services.RespondJSON(w, http.StatusOK, newPost)
+	}
+}
+
+// Wrap the delete post method
+func (a *App) DeletePost(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id, err := strconv.Atoi(params["id"])
+	CheckError(err)
+	post, er := services.DeletePost(a.DB, id)
+	if er != nil {
+		services.RespondError(w, http.StatusBadRequest, "Error while trying to delete post")
+	} else {
+		services.RespondJSON(w, http.StatusOK, post)
+	}
 }
 
 // Wrap the GET all Users method
@@ -80,7 +115,6 @@ func (a *App) GetUserById(w http.ResponseWriter, r *http.Request) {
 	user, er := services.GetUserById(a.DB, id)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch user")
-		// panic(er)
 	} else {
 		services.RespondJSON(w, http.StatusOK, user)
 	}
@@ -92,7 +126,6 @@ func (a *App) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	user, err := services.GetUserByEmail(a.DB, params["email"])
 	if err != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch user")
-		// panic(er)
 	} else {
 		services.RespondJSON(w, http.StatusOK, user)
 	}
@@ -106,7 +139,6 @@ func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 	newUser, er := services.AddUser(a.DB, user)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add user")
-		// panic(er)
 	} else {
 		services.RespondJSON(w, http.StatusOK, newUser)
 	}
@@ -121,7 +153,6 @@ func (a *App) UpdateUserById(w http.ResponseWriter, r *http.Request) {
 	user, er := services.UpdateUserById(a.DB, w, userBody, id)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user")
-		// panic(er)
 	} else {
 		services.RespondJSON(w, http.StatusOK, user)
 	}

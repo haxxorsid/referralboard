@@ -8,7 +8,7 @@ A referral network to get referral from verified professionals.
 - [Anjali Baheti](https://github.com/bahetianjali)
 
 ### Wiki
-- [Wiki](https://github.com/haxxorsid/referralboard/wiki)
+- [About the project?](https://github.com/haxxorsid/referralboard/wiki)
 
 ### Documentation
 - [API Reference](https://github.com/haxxorsid/referralboard/wiki/API-Reference)

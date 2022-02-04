@@ -9,6 +9,9 @@ A referral network to get referral from verified professionals.
 
 ## Wiki
 - [About the project](https://github.com/haxxorsid/referralboard/wiki)
+- [Setup project](https://github.com/haxxorsid/referralboard/wiki/Setup)
+- [Sprint Planning](https://github.com/haxxorsid/referralboard/wiki/Sprint-planning)
+- [Database Schema](https://github.com/haxxorsid/referralboard/wiki/Database-Schema)
 - [API Reference](https://github.com/haxxorsid/referralboard/wiki/API-Reference)
 - [Front-end Documentation](https://github.com/haxxorsid/referralboard/wiki/Frontend-Documentation)
 - [Git Branching Strategy](https://github.com/haxxorsid/referralboard/wiki/Branching-Strategy)

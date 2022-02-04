@@ -15,5 +15,5 @@ A referral network to get referral from verified professionals.
 - [API Reference](https://github.com/haxxorsid/referralboard/wiki/API-Reference)
 - [front-end Documentation](https://github.com/haxxorsid/referralboard/wiki/Frontend-Documentation)
 
-### GIT Branching Strategy?
+### GIT Branching Strategy
 - [GIT Branching Strategy](https://github.com/haxxorsid/referralboard/wiki/Branching-Strategy#strategy)

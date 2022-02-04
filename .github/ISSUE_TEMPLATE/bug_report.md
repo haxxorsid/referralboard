@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen. You can mention 
 If applicable, add screenshots to help explain your problem.
 
 **Device information (optional):**
- - Device: [e.g. iPhone6, Windows PC)
+ - Device: [e.g. iPhone6, Windows PC]
  - OS: [e.g. iOS]
  - Browser [e.g. chrome, safari]
  - Version [e.g. 22]

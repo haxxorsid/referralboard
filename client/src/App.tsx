@@ -4,20 +4,20 @@ import Register from './components/Register';
 import TempHome from './components/TempHome';
 import './App.css';
 import { useEffect, useState } from 'react';
-import { getCards } from './common/apiService';
-import { cardType } from './types';
+import { getPosts } from './common/apiService';
+import { postType } from './types';
 import Home from './components/Home/Home';
 import EditProfile from './components/EditProfile/EditProfile';
 
 export default function App() {
-  const [cards, setCards] = useState<cardType[]>([]);
+  const [posts, setPosts] = useState<postType[]>([]);
   const [error, setError] = useState(null);
 
   // get cards, set cards if success, otherwise set error
   useEffect(() => {
-    getCards()
+    getPosts()
       .then((res) => {
-        setCards(res);
+        setPosts(res);
       })
       .catch((error) => {
         setError(error);
@@ -27,7 +27,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/home' element={<TempHome cards={cards} />} />
+        <Route path='/home' element={<TempHome posts={posts} />} />
         <Route path='/' element={<Home />} />
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

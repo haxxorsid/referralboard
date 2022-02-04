@@ -4,8 +4,8 @@ const api = axios.create({
   baseURL: 'http://localhost:5555'
 })
 
-export function getCards() {
-  return api.get('/cards')
+export function getPosts() {
+  return api.get('/api/posts')
     .then((res) => {
       return res.data
     })

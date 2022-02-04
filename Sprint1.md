@@ -3,6 +3,7 @@ The goal for the Sprint 1 was to develop the essential Front-End Pages, API's, s
 ## Planning
 - Decided Git branching strategy and policies. It is documented in the [Git Branching Strategy wiki](https://github.com/haxxorsid/referralboard/wiki/Branching-Strategy).
 - Created labels and issue templates. It is documented in the [Sprint Planning wiki](https://github.com/haxxorsid/referralboard/wiki/Sprint-planning).
+- Sprint 1 board created [here](https://github.com/haxxorsid/referralboard/projects/1).
 
 ## Development
 ### Following REST API’s have been created

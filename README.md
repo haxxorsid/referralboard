@@ -8,7 +8,7 @@ A referral network to get referral from verified professionals.
 - [Anjali Baheti](https://github.com/bahetianjali)
 
 ## Sprint Progress
-- [Sprint 1](https://github.com/haxxorsid/referralboard/blob/feature/adding_sprint1/Sprint1.md)
+- [Sprint 1](https://github.com/haxxorsid/referralboard/blob/main/Sprint1.md)
 
 ## Wiki
 - [About the project](https://github.com/haxxorsid/referralboard/wiki)

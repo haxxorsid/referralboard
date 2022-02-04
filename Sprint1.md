@@ -21,6 +21,7 @@ Read more about them in [API wiki](https://github.com/haxxorsid/referralboard/wi
 
 ### Following Front-End Web Pages have been created
 
+- A dummy page showing Posts received from Backend (GET /api/posts)
 - Login Page
 - Registration Page 
 - Home Page 

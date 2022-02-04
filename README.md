@@ -7,11 +7,10 @@ A referral network to get referral from verified professionals.
 - [Vineet Khadloya](https://github.com/Vineetkhadloya)
 - [Anjali Baheti](https://github.com/bahetianjali)
 
-### About the project
-- [About Project](https://github.com/haxxorsid/referralboard/wiki)
+### Wiki
+- [Wiki](https://github.com/haxxorsid/referralboard/wiki)
 
 ### Documentation
-
 - [API Reference](https://github.com/haxxorsid/referralboard/wiki/API-Reference)
 - [front-end Documentation](https://github.com/haxxorsid/referralboard/wiki/Frontend-Documentation)
 

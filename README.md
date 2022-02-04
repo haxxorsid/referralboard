@@ -50,3 +50,10 @@ As we struggle to find internships, full-time employment or new opportunities at
     - Reveal candidate button on the post.
     - Future **enhancement**, "I referred the candidate" button on the post, this will remove the post to avoid other existing employees again referring the user.
 
+### Documentation
+
+- [API Reference](https://github.com/haxxorsid/referralboard/wiki/API-Reference)
+- [front-end Documentation](https://github.com/haxxorsid/referralboard/wiki/Frontend-Documentation)
+
+### How to raise an bug or feature request?
+- [Issue and feature request definition](https://github.com/haxxorsid/referralboard/wiki/Branching-Strategy#strategy)

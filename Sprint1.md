@@ -23,4 +23,4 @@ Following Tables have been created in DB :
 - Users table
 - Posts table
 - Companies table
-- Years_of_Experience table
+- Years_of_Experiences table

@@ -2,11 +2,19 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/haxxorsid/referralboard/server/models"
+	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
 )
+
+func validateUser(user models.User) error {
+	v := validator.New()
+	err := v.Struct(user)
+	return err
+}
 
 func CheckError(err error) {
 	if err != nil {
@@ -14,7 +22,7 @@ func CheckError(err error) {
 	}
 }
 
-// Fetch ass users
+// Fetch all users
 func GetAllUsers(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	users := []models.User{}
 	db.Find(&users)
@@ -31,12 +39,16 @@ func GetUserByEmail(db *gorm.DB, email string) (models.User, error) {
 // Fetch User based on User Id
 func GetUserById(db *gorm.DB, id int) (models.User, error) {
 	var user models.User
-	err := db.Where(&models.User{Id: id}).First(&user).Error
+	err := db.Where(&models.User{Id: id}).Preload("Posts").First(&user).Error
 	return user, err
 }
 
 // Add a user
 func AddUser(db *gorm.DB, user models.User) (models.User, error) {
+	e := validateUser(user)
+	if e != nil {
+		return models.User{}, e
+	}
 	err := db.Create(&user).Error
 	if err != nil {
 		return models.User{}, err
@@ -55,4 +67,18 @@ func UpdateUserById(db *gorm.DB, w http.ResponseWriter, userBody *json.Decoder, 
 	}
 
 	return GetUserByEmail(db, user.Email)
+}
+
+// Fetch all the Post of a User
+func GetAllPostsByUserId(db *gorm.DB, id int) ([]models.Post, error) {
+	var posts []models.Post
+	currentUser, err := GetUserById(db, id)
+	if err == nil {
+		fmt.Println("NO ERROR!!!")
+		posts = currentUser.Posts
+		return posts, err
+	} else {
+		fmt.Println(err)
+	}
+	return posts, err
 }

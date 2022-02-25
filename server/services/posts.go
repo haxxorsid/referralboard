@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Get all post
+// Get all posts
 func GetAllPosts(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	posts := []models.Post{}
 	db.Find(&posts)

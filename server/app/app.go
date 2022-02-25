@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/haxxorsid/referralboard/server/config"
@@ -69,6 +71,9 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/posts", a.GetAllPosts).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/posts/newpost", a.AddPost).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/{id}", a.DeletePost).Methods("DELETE", "OPTIONS")
+
+	// Routes for Years of Experience
+	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
 }
 
 // Wrap the get all post method
@@ -116,6 +121,10 @@ func (a *App) GetUserById(w http.ResponseWriter, r *http.Request) {
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch user")
 	} else {
+		posts, err := services.GetAllPostsByUserId(a.DB, id)
+		if err == nil {
+			fmt.Println(posts)
+		}
 		services.RespondJSON(w, http.StatusOK, user)
 	}
 }
@@ -131,16 +140,41 @@ func (a *App) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Email validation
+func isEmailValid(e string) bool {
+	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return emailRegex.MatchString(e)
+}
+
 // Wrap the POST User method
 func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
+	// fmt.Println(json.NewDecoder(r.Body))
 	err := json.NewDecoder(r.Body).Decode(&user)
 	CheckError(err)
-	newUser, er := services.AddUser(a.DB, user)
-	if er != nil {
-		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add user")
+	// Check if email is valid
+	if !isEmailValid(user.Email) {
+		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add user - email is not valid")
 	} else {
-		services.RespondJSON(w, http.StatusOK, newUser)
+		// Extract company domain from email
+		emailParts := strings.Split(user.Email, "@")
+		_, domain := emailParts[0], emailParts[1]
+		// Get company by domain
+		company, er1 := services.GetCompanyByDomain(a.DB, domain)
+		// If company exists, overwrite user provided company name with name in the database and set company id
+		// If company does not exists, company id remains null and company name remains what user provided
+		if er1 == nil {
+			user.CurrentCompanyId = company.Id
+			user.CurrentCompanyName = company.Name
+			user.Verified = true
+		}
+		// Add user
+		newUser, er2 := services.AddUser(a.DB, user)
+		if er2 != nil {
+			services.RespondError(w, http.StatusBadRequest, er2.Error())
+		} else {
+			services.RespondJSON(w, http.StatusOK, newUser)
+		}
 	}
 }
 
@@ -156,6 +190,11 @@ func (a *App) UpdateUserById(w http.ResponseWriter, r *http.Request) {
 	} else {
 		services.RespondJSON(w, http.StatusOK, user)
 	}
+}
+
+// Wrap the GET all Experiences method
+func (a *App) GetAllExperiences(w http.ResponseWriter, r *http.Request) {
+	services.GetAllExperiences(a.DB, w, r)
 }
 
 // Run the app on it's router

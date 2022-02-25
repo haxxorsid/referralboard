@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/haxxorsid/referralboard-private/server/config"
-	"github.com/haxxorsid/referralboard-private/server/models"
-	"github.com/haxxorsid/referralboard-private/server/services"
+	"github.com/haxxorsid/referralboard/server/config"
+	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard/server/services"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"

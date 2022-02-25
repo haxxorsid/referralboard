@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"errors"
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/models"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
 	"golang.org/x/crypto/bcrypt"

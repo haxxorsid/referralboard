@@ -20,3 +20,10 @@ func GetCompanyByDomain(db *gorm.DB, domain string) (models.Company, error) {
 	err := db.Where(&models.Company{Domain: domain}).First(&company).Error
 	return company, err
 }
+
+// Fetch Company by id
+func GetCompanyById(db *gorm.DB, id int) (models.Company, error) {
+	var company models.Company
+	err := db.Where(&models.Company{Id: id}).First(&company).Error
+	return company, err
+}

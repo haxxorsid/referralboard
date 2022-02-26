@@ -42,3 +42,10 @@ func DeletePost(db *gorm.DB, id int) (models.Post, error) {
 	}
 	return post, err
 }
+
+// Fetch posts based on UserId
+func GetPostsByUserId(db *gorm.DB, userId int) ([]models.Post, error) {
+	var posts []models.Post
+	err := db.Where(&models.Post{UserId: userId}).Preload("Company").Order("created_at desc").Find(&posts).Error
+	return posts, err
+}

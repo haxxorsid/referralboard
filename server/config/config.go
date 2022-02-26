@@ -18,8 +18,8 @@ func GetConfig() *Config {
 	return &Config{
 		DB: &DBConfig{
 			Host:     "localhost",
-			User:     "shashank",
-			Password: "root",
+			User:     "username",
+			Password: "password",
 			Dbname:   "appdb",
 			Port:     "5432",
 			Sslmode:  "disable",

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/haxxorsid/referralboard/server/config"
 	"github.com/haxxorsid/referralboard/server/models"
@@ -17,7 +18,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"github.com/golang-jwt/jwt"
 )
 
 // this should come from ENV or a configuration file
@@ -31,7 +31,7 @@ type App struct {
 
 // Create a struct to read the username and password from the request body
 type credentials struct {
-	Email string `json:"email"`
+	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
@@ -79,7 +79,7 @@ func CheckError(err error) {
 
 // Set all required routers
 func (a *App) setRouters() {
-	
+
 	// Routing for handling the projects
 
 	// Route for user login, token validate, and logout
@@ -89,16 +89,17 @@ func (a *App) setRouters() {
 
 	// Routes for user
 	a.Router.HandleFunc("/users", a.ValidateLogin(http.HandlerFunc(a.GetAllUsers))).Methods("GET", "OPTIONS")
-	a.Router.HandleFunc("/users/id",  a.ValidateLogin(http.HandlerFunc(a.GetUserById))).Methods("GET", "OPTIONS")
-	a.Router.HandleFunc("/users/newuser",  a.AddUser).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updateprofile",  a.ValidateLogin(http.HandlerFunc(a.UpdateUserProfileById))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updateemail",  a.ValidateLogin(http.HandlerFunc(a.UpdateUserEmailById))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updatepassword",  a.ValidateLogin(http.HandlerFunc(a.UpdateUserPasswordById))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id", a.ValidateLogin(http.HandlerFunc(a.GetUserById))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/users/newuser", a.AddUser).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updateprofile", a.ValidateLogin(http.HandlerFunc(a.UpdateUserProfileById))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updateemail", a.ValidateLogin(http.HandlerFunc(a.UpdateUserEmailById))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updatepassword", a.ValidateLogin(http.HandlerFunc(a.UpdateUserPasswordById))).Methods("POST", "OPTIONS")
 
 	// Routes for Posts
 	a.Router.HandleFunc("/posts", a.ValidateLogin(http.HandlerFunc(a.GetAllPosts))).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/posts/newpost", a.ValidateLogin(http.HandlerFunc(a.AddPost))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/posts/{id}", a.ValidateLogin(http.HandlerFunc(a.DeletePost))).Methods("DELETE", "OPTIONS")
+	a.Router.HandleFunc("/posts/id/{id}", a.ValidateLogin(http.HandlerFunc(a.DeletePost))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/posts/userid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByUserId))).Methods("GET", "OPTIONS")
 
 	// Routes for Years of Experience
 	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
@@ -115,7 +116,7 @@ func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	result, err := services.ValidateUserCredentials(a.DB, creds.Email, creds.Password)
-	if err != nil || result == false {
+	if err != nil || !result {
 		services.RespondError(w, http.StatusUnauthorized, "Credentials invalid or some error occured")
 		return
 	}
@@ -125,7 +126,7 @@ func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusBadRequest, "Some error occured in searching UserId for this email")
 		return
 	}
-	if result == true {
+	if result {
 		// Declare the expiration time of the token
 		// here, we have kept it as 5 minutes
 		expirationTime := time.Now().Add(30 * time.Minute)
@@ -151,13 +152,10 @@ func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 		// Finally, we set the client cookie for "referralboard-jwt-token" as the JWT we just generated
 		// we also set an expiry time which is the same as the token itself
 		http.SetCookie(w, &http.Cookie{
-			Name:    "referralboard-jwt-token",
-			Value:   tokenString,
-			Expires: expirationTime,
+			Name:     "referralboard-jwt-token",
+			Value:    tokenString,
+			Expires:  expirationTime,
 			HttpOnly: true,
-			SameSite: http.SameSiteNoneMode,
-			Secure: true,
-			Path: "/",
 		})
 
 		services.RespondJSON(w, http.StatusOK, tokenString)
@@ -165,7 +163,7 @@ func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 // ValidateLogin is the middleware.
-func (a *App)  ValidateLogin(next ...http.Handler) func(w http.ResponseWriter, r *http.Request) {
+func (a *App) ValidateLogin(next ...http.Handler) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// We can obtain the session token from the requests cookies, which come with every request
 		c, err := r.Cookie("referralboard-jwt-token")
@@ -213,7 +211,7 @@ func (a *App)  ValidateLogin(next ...http.Handler) func(w http.ResponseWriter, r
 	}
 }
 
-func getTokenBody(r *http.Request) (*claims){
+func getTokenBody(r *http.Request) *claims {
 	c, _ := r.Cookie("referralboard-jwt-token")
 	tknStr := c.Value
 	claims := &claims{}
@@ -239,9 +237,6 @@ func (a *App) LogoutUser(w http.ResponseWriter, r *http.Request) {
 		Name:    "referralboard-jwt-token",
 		Value:   tokenString,
 		Expires: expirationTime,
-		SameSite: http.SameSiteNoneMode,
-		Secure: true,
-		Path: "/",
 	})
 	services.RespondJSON(w, http.StatusOK, "Logged out the user")
 }
@@ -335,7 +330,7 @@ func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 // Wrap the update user method
 func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
- 	requestBody := json.NewDecoder(r.Body)
+	requestBody := json.NewDecoder(r.Body)
 	user, er := services.UpdateUserProfileById(a.DB, w, requestBody, claims.UserId)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user profile by id")
@@ -347,7 +342,7 @@ func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
 // Wrap the update user method
 func (a *App) UpdateUserEmailById(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
- 	requestBody := json.NewDecoder(r.Body)
+	requestBody := json.NewDecoder(r.Body)
 	user, er := services.UpdateUserEmailById(a.DB, w, requestBody, claims.UserId)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user email by id")
@@ -367,14 +362,14 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusBadRequest, "Structure of the request body is invalid")
 		return
 	}
-	user, er := services.GetUserById(a.DB, claims.UserId)
-	if err != nil {
+	user, er1 := services.GetUserById(a.DB, claims.UserId)
+	if er1 != nil {
 		// If the structure of the body is wrong, return an HTTP error
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user password by id")
 		return
 	}
 	result, err := services.ValidateUserCredentials(a.DB, user.Email, userPassword.CurrentPassword)
-	if err != nil || result == false {
+	if err != nil || !result {
 		services.RespondError(w, http.StatusUnauthorized, "Credentials invalid or some error occured")
 		return
 	}
@@ -389,6 +384,17 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 // Wrap the GET all Experiences method
 func (a *App) GetAllExperiences(w http.ResponseWriter, r *http.Request) {
 	services.GetAllExperiences(a.DB, w, r)
+}
+
+// Wrap the GET User posts by user Id method
+func (a *App) GetPostsByUserId(w http.ResponseWriter, r *http.Request) {
+	claims := getTokenBody(r)
+	posts, er := services.GetPostsByUserId(a.DB, claims.UserId)
+	if er != nil {
+		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts of a user")
+	} else {
+		services.RespondJSON(w, http.StatusOK, posts)
+	}
 }
 
 // Run the app on it's router

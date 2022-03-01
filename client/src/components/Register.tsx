@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   Avatar,
   Button,
@@ -9,38 +9,82 @@ import {
   Box,
   Typography,
   Container,
-  SelectChangeEvent,
   MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-} from '@mui/material';
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import { ThemeProvider } from '@mui/material/styles';
-import { Link as RouterLink } from 'react-router-dom';
-import { theme } from '../common/theme';
+} from "@mui/material";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
+import { ThemeProvider } from "@mui/material/styles";
+import { Link as RouterLink } from "react-router-dom";
+import { theme } from "../common/theme";
+import { getExperiences, registerUser } from "../common/apiService";
+import { useEffect, useState } from "react";
+import { userType, experienceType } from "../types";
+import Toast from "./common/Toast";
+import {
+  ValidatorForm,
+  TextValidator
+} from 'react-material-ui-form-validator';
 
 export default function Register() {
-  const [yoe, setYoe] = React.useState('');
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      firstname: data.get('firstname'),
-      lastname: data.get('lastname'),
-      email: data.get('email'),
-    });
+  const initialFormValues = () => {
+    return {
+      firstName: "",
+      lastName: "",
+      currentLocation: "",
+      currentCompanyName: "",
+      currentPosition: "",
+      school: "",
+      yearsOfExperienceId: 1,
+      email: "",
+      password: "",
+    };
   };
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setYoe(event.target.value as string);
+  const [user, setUser] = React.useState<userType>(initialFormValues());
+  const [showToast, setShowToast] = React.useState(false);
+  const [toastSeverity, setToastSeverity] = React.useState("success");
+  const [toastMessage, setToastMessage] = React.useState("");
+
+  const [experiences, setExperiences] = useState<experienceType[]>([]);
+  const [error, setError] = useState(null);
+
+  // get cards, set cards if success, otherwise set error
+  useEffect(() => {
+    ValidatorForm.addValidationRule('isTruthy', (value: any) => value);
+    getExperiences()
+      .then((res) => {
+        setExperiences(res);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
+
+  const handleSubmit = (event: React.FormEvent<Element>) => {
+    event.preventDefault();
+    registerUser(user)
+      .then((res) => {
+        displayToast("success", "User registered");
+        setUser(initialFormValues());
+      })
+      .catch((error) => {
+        displayToast("error", error.message);
+      });
+  };
+
+  const handleChange =
+    (prop: keyof userType) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setUser({ ...user, [prop]: event.target.value });
+    };
+
+  const displayToast = (severity: string, message: string) => {
+    setShowToast(true);
+    setToastSeverity(severity);
+    setToastMessage(message);
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component='main' maxWidth='xs'>
+      <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
@@ -57,122 +101,155 @@ export default function Register() {
             Register
           </Typography>
           <Box
-            component='form'
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: '100%' }}
           >
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='firstname'
-              label='First Name'
-              name='firstname'
-              autoComplete='firstname'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='lastname'
-              label='Last Name'
-              name='lastname'
-              autoComplete='lastname'
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='location'
-              label='Current Location'
-              name='location'
-              autoComplete='location'
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='company'
-              label='Current Company Name'
-              name='company'
-              autoComplete='company'
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='position'
-              label='Current Position Title'
-              name='position'
-              autoComplete='position'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='school'
-              label='School'
-              name='school'
-              autoComplete='school'
-            />
-            <FormControl fullWidth sx={{ my: [2, 2] }}>
-              <InputLabel id='yoe-label'>Years of Experience</InputLabel>
-              <Select
-                labelId='yoe-label'
-                required
-                id='yoe'
-                value={yoe}
-                label='Years of Experience'
-                onChange={handleChange}
-              >
-                <MenuItem value={1}>0 Years / Student / Intern</MenuItem>
-                <MenuItem value={2}>0 - 1 Years</MenuItem>
-                <MenuItem value={3}>1 - 3 Years</MenuItem>
-                <MenuItem value={4}>3 - 5 Years</MenuItem>
-                <MenuItem value={5}>5 - 7 Years</MenuItem>
-                <MenuItem value={6}>7 - 10 Years</MenuItem>
-                <MenuItem value={7}>10+ Years</MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='password'
-              label='Password'
-              type='password'
-              id='password'
-              autoComplete='current-password'
-            />
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 2 }}
+            <ValidatorForm
+              onSubmit={handleSubmit}
+              onError={(errors: any) => console.log(errors)}
             >
-              Register
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link component={RouterLink} to='/login' variant='body2'>
-                  Back to login?
-                </Link>
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="firstName"
+                value={user.firstName}
+                label="First Name"
+                name="firstName"
+                autoComplete="firstName"
+                autoFocus
+                onChange={handleChange("firstName")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="lastName"
+                value={user.lastName}
+                label="Last Name"
+                name="lastName"
+                autoComplete="lastName"
+                onChange={handleChange("lastName")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="currentLocation"
+                label="Current Location"
+                name="currentLocation"
+                autoComplete="currentLocation"
+                value={user.currentLocation}
+                onChange={handleChange("currentLocation")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="currentCompanyName"
+                value={user.currentCompanyName}
+                label="Current Company Name"
+                name="currentCompanyName"
+                autoComplete="currentCompanyName"
+                onChange={handleChange("currentCompanyName")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="currentPosition"
+                value={user.currentPosition}
+                label="Current Position Title"
+                name="currentPosition"
+                autoComplete="currentPosition"
+
+                onChange={handleChange("currentPosition")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                id="school"
+                value={user.school}
+                label="School"
+                name="school"
+                autoComplete="school"
+                onChange={handleChange("school")}
+              />
+              <TextField
+                margin="normal"
+                id="yearsOfExperienceId"
+                select
+                fullWidth
+                label="Years of Experience"
+                value={user.yearsOfExperienceId}
+                onChange={handleChange("yearsOfExperienceId")}
+                required
+              >
+                {experiences &&
+                  experiences.map((experience) => (
+                    <MenuItem
+                      value={experience.yearsOfExperienceId}
+                      key={experience.yearsOfExperienceId}
+                    >
+                      {experience.description}
+                    </MenuItem>
+                  ))}
+              </TextField>
+              <TextValidator
+                margin="normal"
+                validators={["required", "isEmail"]}
+                errorMessages={["this field is required", "Not a valid Email address"]}
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={user.email}
+                onChange={handleChange("email")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={user.password}
+                autoComplete="current-password"
+                onChange={handleChange("password")}
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Register
+              </Button>
+              <Grid container>
+                <Grid item xs>
+                  <Link component={RouterLink} to='/login' variant='body2'>
+                    Back to login?
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </ValidatorForm>
           </Box>
         </Box>
+        <Toast
+          open={showToast}
+          severity={toastSeverity}
+          message={toastMessage}
+          setOpen={setShowToast}
+        />
       </Container>
     </ThemeProvider>
   );

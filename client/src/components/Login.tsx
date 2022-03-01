@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   Avatar,
   Button,
-  TextField,
   CssBaseline,
   Link,
   Grid,
@@ -14,16 +13,48 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { ThemeProvider } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
 import { theme } from '../common/theme';
+import {
+  ValidatorForm,
+  TextValidator
+} from 'react-material-ui-form-validator';
+import { loginType } from "../types";
+import Toast from './common/Toast';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../common/auth';
 
 export default function Login() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const initialFormValues = () => {
+    return {
+      email: "",
+      password: "",
+    };
+  };
+
+  const [loginValues, setLoginValues] = React.useState<loginType>(initialFormValues());
+  const [showToast, setShowToast] = React.useState(false);
+  const [toastSeverity, setToastSeverity] = React.useState("success");
+  const [toastMessage, setToastMessage] = React.useState("");
+  let auth = useAuth();
+  let navigate = useNavigate();
+
+  const handleSubmit = (event: React.FormEvent<Element>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    auth.signin(loginValues, () => {
+      navigate("/", { replace: true });
+    }, (error: any) => {
+      displayToast("error", error.message);
     });
+  };
+
+  const handleChange =
+    (prop: keyof loginType) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      setLoginValues({ ...loginValues, [prop]: event.target.value });
+    };
+
+  const displayToast = (severity: string, message: string) => {
+    setShowToast(true);
+    setToastSeverity(severity);
+    setToastMessage(message);
   };
 
   return (
@@ -45,48 +76,61 @@ export default function Login() {
             Sign in
           </Typography>
           <Box
-            component='form'
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
+            sx={{ mt: 1, width: '100%' }}
           >
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Email Address'
-              name='email'
-              autoComplete='email'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              name='password'
-              label='Password'
-              type='password'
-              id='password'
-              autoComplete='current-password'
-            />
-            <Button
-              type='submit'
-              fullWidth
-              variant='contained'
-              sx={{ mt: 3, mb: 2 }}
+            <ValidatorForm
+              onSubmit={handleSubmit}
+              onError={(errors: any) => console.log(errors)}
             >
-              Sign In
-            </Button>
-            <Grid container>
-              <Grid item>
-                <Link component={RouterLink} to='/register' variant='body2'>
-                  Register?
-                </Link>
+              <TextValidator
+                margin="normal"
+                validators={["required", "isEmail"]}
+                errorMessages={["this field is required", "Not a valid Email address"]}
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                value={loginValues.email}
+                onChange={handleChange("email")}
+              />
+              <TextValidator
+                margin="normal"
+                validators={["required"]}
+                errorMessages={["this field is required"]}
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                value={loginValues.password}
+                autoComplete="current-password"
+                onChange={handleChange("password")}
+              />
+              <Button
+                type='submit'
+                fullWidth
+                variant='contained'
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item>
+                  <Link component={RouterLink} to='/register' variant='body2'>
+                    Register?
+                  </Link>
+                </Grid>
               </Grid>
-            </Grid>
+            </ValidatorForm>
           </Box>
         </Box>
+        <Toast
+          open={showToast}
+          severity={toastSeverity}
+          message={toastMessage}
+          setOpen={setShowToast}
+        />
       </Container>
     </ThemeProvider>
   );

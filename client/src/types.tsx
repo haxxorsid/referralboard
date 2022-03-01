@@ -8,3 +8,25 @@ export type postType = {
     jobLink: string,
     createdAt: string
 }
+
+export type experienceType = {
+    yearsOfExperienceId: number,
+    description: string
+}
+
+export type userType = {
+    firstName: string,
+    lastName: string,
+    currentLocation: string,
+    currentCompanyName: string,
+    currentPosition: string,
+    school: string,
+    yearsOfExperienceId: number,
+    email: string,
+    password: string
+}
+
+export type loginType = {
+    email: string,
+    password: string
+}

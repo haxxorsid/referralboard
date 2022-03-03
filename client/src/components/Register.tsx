@@ -17,7 +17,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { theme } from "../common/theme";
 import { getExperiences, registerUser } from "../common/apiService";
 import { useEffect, useState } from "react";
-import { userType, experienceType } from "../types";
+import { registerFormType, experienceType } from "../types";
 import Toast from "./common/Toast";
 import {
   ValidatorForm,
@@ -39,7 +39,7 @@ export default function Register() {
     };
   };
 
-  const [user, setUser] = React.useState<userType>(initialFormValues());
+  const [user, setUser] = React.useState<registerFormType>(initialFormValues());
   const [showToast, setShowToast] = React.useState(false);
   const [toastSeverity, setToastSeverity] = React.useState("success");
   const [toastMessage, setToastMessage] = React.useState("");
@@ -47,7 +47,6 @@ export default function Register() {
   const [experiences, setExperiences] = useState<experienceType[]>([]);
   const [error, setError] = useState(null);
 
-  // get cards, set cards if success, otherwise set error
   useEffect(() => {
     ValidatorForm.addValidationRule('isTruthy', (value: any) => value);
     getExperiences()
@@ -55,7 +54,7 @@ export default function Register() {
         setExperiences(res);
       })
       .catch((error) => {
-        setError(error);
+        displayToast("error", error.message);
       });
   }, []);
 
@@ -72,7 +71,7 @@ export default function Register() {
   };
 
   const handleChange =
-    (prop: keyof userType) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    (prop: keyof registerFormType) => (event: React.ChangeEvent<HTMLInputElement>) => {
       setUser({ ...user, [prop]: event.target.value });
     };
 

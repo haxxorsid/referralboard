@@ -12,7 +12,7 @@ export default function NavBar() {
     auth.signout(() => {
       navigate("/logout");
     }, (_error: any) => {
-      
+      navigate("/logout");
     });
   };
 
@@ -35,14 +35,6 @@ export default function NavBar() {
               underline="none"
             >
               Home
-            </Link>
-            <Link component={RouterLink} to="/posts"
-              variant="button"
-              color="text.primary"
-              sx={{ my: 1, mx: 1.5 }}
-              underline="none"
-            >
-              Requests
             </Link>
             <Link component={RouterLink} to="/edit-profile"
               variant="button"

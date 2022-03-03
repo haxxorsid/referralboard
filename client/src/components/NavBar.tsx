@@ -1,8 +1,21 @@
 import AppBar from '@mui/material/AppBar';
-import {Link as RouterLink} from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import { Button, Toolbar, Typography, Link} from '@mui/material';
+import { useAuth } from '../common/auth';
+import React from 'react';
 
 export default function NavBar() {
+  let auth = useAuth();
+  let navigate = useNavigate();
+
+  const logout = () => {
+    auth.signout(() => {
+      navigate("/logout");
+    }, (_error: any) => {
+      
+    });
+  };
+
   return (
       <AppBar
         position="static"
@@ -43,7 +56,7 @@ export default function NavBar() {
           <Button component={RouterLink} to="/create-post" variant="outlined" sx={{ my: 1, mx: 1.5 }} color="success">
           Post
           </Button>
-          <Button component={RouterLink} to="/login" variant="outlined" sx={{ my: 1, mx: 1.5 }} color="error">
+          <Button variant="outlined" sx={{ my: 1, mx: 1.5 }} color="error" onClick={logout}>
           Logout
           </Button>
         </Toolbar>

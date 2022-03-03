@@ -17,6 +17,7 @@
     "axios": "^0.25.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-material-ui-form-validator": "^3.0.0",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "typescript": "^4.5.4",
@@ -45,5 +46,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-material-ui-form-validator": "^2.1.1"
   }
 }

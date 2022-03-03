@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { userType, loginType } from '../types';
+import { registerFormType, loginType, profileFormType, emailFormType, passwordFormType } from '../types';
 
 const api = axios.create({
   withCredentials: true,
@@ -21,12 +21,9 @@ export function getExperiences() {
     .then((res) => {
       return res.data
     })
-    .catch((error) => {
-      return error.message
-    })
 };
 
-export function registerUser(user: userType) {
+export function registerUser(user: registerFormType) {
   return api.post('users/newuser', user, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
     .then((res) => {
       return res.data
@@ -43,4 +40,45 @@ export function logoutUser() {
 
 export function validateLogin() {
   return api.post('validatelogin', {}, {headers: {"Content-Type": "application/x-www-form-urlencoded"}});
+};
+
+export function getUserProfile() {
+  return api.get('users/id', {}).then((res) => {
+    return res.data
+  });
+};
+
+export function updateUserProfile(profileFormValues: profileFormType) {
+  return api.post('users/id/updateprofile', profileFormValues, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
+  .then((res) => {
+    return res.data
+  });
+};
+
+export function updateUserEmail(emailFormValues: emailFormType) {
+  return api.post('users/id/updateemail', emailFormValues, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
+  .then((res) => {
+    return res.data
+  });
+};
+
+export function updateUserPassword(passwordFormValues: passwordFormType) {
+  return api.post('users/id/updatepassword', passwordFormValues, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
+  .then((res) => {
+    return res.data
+  });
+};
+
+export function getPostsByUserId() {
+  return api.get('posts/userid', {})
+  .then((res) => {
+    return res.data
+  });
+};
+
+export function deletePostById(postId: number) {
+  return api.post(`posts/id/${postId}`, {}, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
+  .then((res) => {
+    return res.data
+  });
 };

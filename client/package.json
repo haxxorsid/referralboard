@@ -10,7 +10,6 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.4.0",
     "@types/node": "^16.11.21",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
@@ -49,7 +48,13 @@
     ]
   },
   "devDependencies": {
+    "@types/enzyme": "^3.10.11",
+    "@types/jest": "^27.4.1",
     "@types/react-material-ui-form-validator": "^2.1.1",
-    "cypress": "^9.5.0"
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
+    "axios-mock-adapter": "^1.20.0",
+    "cypress": "^9.5.0",
+    "enzyme": "^3.11.0",
+    "jest": "^27.5.1"
   }
 }

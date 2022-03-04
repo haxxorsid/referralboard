@@ -58,5 +58,5 @@ Bugs raised: [#49](https://github.com/haxxorsid/referralboard/issues/49)
 
 ## Demo Videos
 
-- [Front-End](https://github.com/haxxorsid/referralboard/blob/main/demo/sprint1/frontend.mp4)
-- [Back-End](https://github.com/haxxorsid/referralboard/blob/main/demo/sprint1/backend.mp4)
+- [Front-End](https://youtu.be/9BVj0a9ycn0)
+- [Back-End](https://youtu.be/TbAVIb_IOiA)

@@ -5,16 +5,17 @@
 CREATE TABLE IF NOT EXISTS app.users
 (
     user_id bigint NOT NULL DEFAULT nextval('app.users_user_id_seq'::regclass),
-    first_name text COLLATE pg_catalog."default",
-    last_name text COLLATE pg_catalog."default",
-    current_location text COLLATE pg_catalog."default",
+    first_name text COLLATE pg_catalog."default" NOT NULL,
+    last_name text COLLATE pg_catalog."default" NOT NULL,
+    current_location text COLLATE pg_catalog."default" NOT NULL,
     current_company_id bigint,
-    current_company_name text COLLATE pg_catalog."default",
-    current_position text COLLATE pg_catalog."default",
-    school text COLLATE pg_catalog."default",
-    years_of_experience_id bigint,
-    email text COLLATE pg_catalog."default",
-    password_hash text COLLATE pg_catalog."default",
+    current_company_name text COLLATE pg_catalog."default" NOT NULL,
+    current_position text COLLATE pg_catalog."default" NOT NULL,
+    school text COLLATE pg_catalog."default" NOT NULL,
+    years_of_experience_id bigint NOT NULL,
+    email text COLLATE pg_catalog."default" NOT NULL,
+    password_hash text COLLATE pg_catalog."default" NOT NULL,
+    verified boolean NOT NULL DEFAULT false,
     CONSTRAINT users_pkey PRIMARY KEY (user_id)
 )
 

@@ -2,10 +2,10 @@
 A referral network to get referral from verified professionals.
 
 ## Team members
-- [Siddhesh Patil](https://github.com/haxxorsid)
-- [Shashank Kumar](https://github.com/shashank136)
-- [Vineet Khadloya](https://github.com/Vineetkhadloya)
-- [Anjali Baheti](https://github.com/bahetianjali)
+- [Siddhesh Patil](https://github.com/haxxorsid) (Backend)
+- [Shashank Kumar](https://github.com/shashank136) (Backend)
+- [Vineet Khadloya](https://github.com/Vineetkhadloya) (Frontend)
+- [Anjali Baheti](https://github.com/bahetianjali) (Frontend)
 
 ## Sprint Progress
 - [Sprint 1](./Sprint1.md)

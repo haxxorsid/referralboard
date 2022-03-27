@@ -3,7 +3,7 @@ package services
 import (
 	"net/http"
 
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/models"
 	"gorm.io/gorm"
 )
 

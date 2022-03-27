@@ -9,8 +9,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/haxxorsid/referralboard/server/config"
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/config"
+	"github.com/haxxorsid/referralboard-private/server/models"
 )
 
 var a = &App{}

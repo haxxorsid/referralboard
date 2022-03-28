@@ -103,6 +103,9 @@ func (a *App) setRouters() {
 
 	// Routes for Years of Experience
 	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
+
+	// Routes for Companies
+	a.Router.HandleFunc("/companies", a.ValidateLogin(http.HandlerFunc(a.GetAllCompanies))).Methods("GET", "OPTIONS")
 }
 
 // Method to login user by generating JWT Token and setting cookie
@@ -248,9 +251,11 @@ func (a *App) GetAllPosts(w http.ResponseWriter, r *http.Request) {
 
 // Wrap the add new post method
 func (a *App) AddPost(w http.ResponseWriter, r *http.Request) {
+	claims := getTokenBody(r)
 	var post models.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
 	CheckError(err)
+	post.UserId = claims.UserId
 	newPost, er := services.AddPost(a.DB, post)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add post")
@@ -384,6 +389,11 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 // Wrap the GET all Experiences method
 func (a *App) GetAllExperiences(w http.ResponseWriter, r *http.Request) {
 	services.GetAllExperiences(a.DB, w, r)
+}
+
+// Wrap the GET all Companies method
+func (a *App) GetAllCompanies(w http.ResponseWriter, r *http.Request) {
+	services.GetAllCompanies(a.DB, w, r)
 }
 
 // Wrap the GET User posts by user Id method

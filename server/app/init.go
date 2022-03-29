@@ -3,7 +3,7 @@ package app
 import (
 	"time"
 
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -16,8 +16,7 @@ func (a *App) SetUpDB() {
 	a.DB.Migrator().DropTable(&models.YearsOfExperience{})
 
 	// Migrate the schema
-	a.DB.AutoMigrate(&models.YearsOfExperience{}, &models.Company{}, &models.User{}, &models.Post{})
-
+	a.DB.AutoMigrate(&models.YearsOfExperience{}, &models.Company{})
 	// Create Years of Experience table data
 	a.DB.Create(&models.YearsOfExperience{Description: "0 Years/Student/Intern"})
 	a.DB.Create(&models.YearsOfExperience{Description: "0 - 1 Years"})

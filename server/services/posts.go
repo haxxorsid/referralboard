@@ -3,7 +3,7 @@ package services
 import (
 	"net/http"
 
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/models"
 	"gorm.io/gorm"
 )
 
@@ -47,5 +47,12 @@ func DeletePost(db *gorm.DB, id int) (models.Post, error) {
 func GetPostsByUserId(db *gorm.DB, userId int) ([]models.Post, error) {
 	var posts []models.Post
 	err := db.Where(&models.Post{UserId: userId}).Preload("Company").Order("created_at desc").Find(&posts).Error
+	return posts, err
+}
+
+// Fetch posts based on CompanyId
+func GetPostsByCompanyId(db *gorm.DB, companyId int) ([]models.Post, error) {
+	var posts []models.Post
+	err := db.Where(&models.Post{TargetCompanyId: companyId}).Preload("Company").Preload("User").Order("created_at desc").Find(&posts).Error
 	return posts, err
 }

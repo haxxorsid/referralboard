@@ -14,4 +14,5 @@ type Post struct {
 	JobLink         string    `json:"jobLink" gorm:"column:job_link"`
 	CreatedAt       time.Time `json:"createdAt"`
 	Company         Company   `json:"company,omitempty" gorm:"foreignKey:target_company_id;references:Id"`
+	User         	User   	  `json:"user,omitempty" gorm:"foreignKey:user_id;references:Id"`
 }

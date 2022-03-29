@@ -12,9 +12,9 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
-	"github.com/haxxorsid/referralboard/server/config"
-	"github.com/haxxorsid/referralboard/server/models"
-	"github.com/haxxorsid/referralboard/server/services"
+	"github.com/haxxorsid/referralboard-private/server/config"
+	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard-private/server/services"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -100,6 +100,7 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/posts/newpost", a.ValidateLogin(http.HandlerFunc(a.AddPost))).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/id/{id}", a.ValidateLogin(http.HandlerFunc(a.DeletePost))).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/userid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByUserId))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/posts/companyid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByCompanyId))).Methods("GET", "OPTIONS")
 
 	// Routes for Years of Experience
 	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
@@ -406,6 +407,28 @@ func (a *App) GetPostsByUserId(w http.ResponseWriter, r *http.Request) {
 		services.RespondJSON(w, http.StatusOK, posts)
 	}
 }
+
+// Wrap the GET User posts by company id
+func (a *App) GetPostsByCompanyId(w http.ResponseWriter, r *http.Request) {
+	claims := getTokenBody(r)
+	user, er := services.GetUserById(a.DB, claims.UserId)
+	if er != nil {
+		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch a user")
+	} else {
+		posts := []models.Post{}
+		if user.CurrentCompanyId == 0 {
+			services.RespondJSON(w, http.StatusOK, posts)
+		} else {
+			posts, er = services.GetPostsByCompanyId(a.DB, user.CurrentCompanyId)
+			if er != nil {
+				services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts by user's company")
+			} else {
+				services.RespondJSON(w, http.StatusOK, posts)
+			}
+		}
+	}
+}
+
 
 // Run the app on it's router
 func (a *App) Run(host string) {

@@ -7,6 +7,7 @@ import { validateLogin } from './common/apiService';
 import Home from './components/Home/Home';
 import EditProfile from './components/EditProfile/EditProfile';
 import { AuthProvider, useAuth } from './common/auth';
+import CreatePost from './components/CreatePost';
 
 function RequireAuth({ children }: { children: JSX.Element }) {
   let auth = useAuth();
@@ -66,6 +67,7 @@ export default function App() {
           <Route path='/login' element={<RequireNoAuth><Login /></RequireNoAuth>} />
           <Route path='/register' element={<RequireNoAuth><Register /></RequireNoAuth>} />
           <Route path='/edit-profile' element={<RequireAuth><EditProfile /></RequireAuth>} />
+          <Route path='/create-post' element={<RequireAuth><CreatePost /></RequireAuth>} />
         </Routes>
       </Router>
     </AuthProvider>

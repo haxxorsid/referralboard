@@ -78,3 +78,11 @@ export type userType = {
     password: string,
     verified: boolean
 }
+
+export type createPostFormType = {
+    targetCompanyId: number; 
+    targetPosition: string; 
+    message: string; 
+    resume: string; 
+    jobLink: string;
+}

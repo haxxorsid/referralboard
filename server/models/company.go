@@ -1,7 +1,7 @@
 package models
 
 type Company struct {
-	Id     int   `json:"companyId" gorm:"primary_key;column:company_id"`
+	ID     int   `json:"companyId" gorm:"primary_key;"`
 	Name   string `json:"name"`
 	Domain string `json:"domain"`
 }

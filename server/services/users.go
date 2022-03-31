@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/models"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
@@ -24,13 +24,6 @@ func CheckError(err error) {
 	}
 }
 
-// Fetch all users
-func GetAllUsers(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
-	users := []models.User{}
-	db.Find(&users)
-	RespondJSON(w, http.StatusOK, users)
-}
-
 // Fetch User based on Email id
 func GetUserByEmail(db *gorm.DB, email string) (models.User, error) {
 	var user models.User
@@ -41,14 +34,7 @@ func GetUserByEmail(db *gorm.DB, email string) (models.User, error) {
 // Fetch User based on User Id
 func GetUserById(db *gorm.DB, id int) (models.User, error) {
 	var user models.User
-	err := db.Where(&models.User{Id: id}).First(&user).Error
-	return user, err
-}
-
-// Fetch User and its posts based on User Id
-func GetUserWithPostsByUserId(db *gorm.DB, id int) (models.User, error) {
-	var user models.User
-	err := db.Where(&models.User{Id: id}).Preload("Posts").First(&user).Error
+	err := db.Where(&models.User{ID: id}).First(&user).Error
 	return user, err
 }
 
@@ -86,20 +72,20 @@ func UpdateUserProfileById(db *gorm.DB, w http.ResponseWriter, requestBody *json
 		return models.User{}, err
 	}
 	verified := *currentUser.Verified
-	if currentUser.CurrentCompanyId == 0 {
+	if currentUser.CompanyID == 0 {
 		verified = false
 	} else {
-		company, e := GetCompanyById(db, currentUser.CurrentCompanyId)
+		company, e := GetCompanyById(db, currentUser.CompanyID)
 		if e != nil {
 			return models.User{}, e
 		}
-		if company.Name == userProfile.CurrentCompanyName {
+		if company.Name == userProfile.CompanyName {
 			verified = true
 		} else {
 			verified = false
 		}
 	}
-	er := db.Where(&models.User{Id: id}).Updates(models.User{FirstName: userProfile.FirstName, LastName: userProfile.LastName, CurrentLocation: userProfile.CurrentLocation, CurrentCompanyName: userProfile.CurrentCompanyName, CurrentPosition: userProfile.CurrentPosition, YearsOfExperienceId: userProfile.YearsOfExperienceId, School: userProfile.School, Verified: &verified}).Error
+	er := db.Where(&models.User{ID: id}).Updates(models.User{FirstName: userProfile.FirstName, LastName: userProfile.LastName, Location: userProfile.Location, CompanyName: userProfile.CompanyName, Position: userProfile.Position, YearsOfExperienceID: userProfile.YearsOfExperienceId, School: userProfile.School, Verified: &verified}).Error
 	if er != nil {
 		return models.User{}, er
 	}
@@ -135,21 +121,21 @@ func UpdateUserEmailById(db *gorm.DB, w http.ResponseWriter, requestBody *json.D
 	_, domain := emailParts[0], emailParts[1]
 	// Get company by domain
 	company, er1 := GetCompanyByDomain(db, domain)
-	currentCompanyId := currentUser.CurrentCompanyId
-	currentCompanyName := currentUser.CurrentCompanyName
+	companyId := currentUser.CompanyID
+	CompanyName := currentUser.CompanyName
 	verified := *currentUser.Verified
 	// If company exists, overwrite user provided company name with name in the database and set company id
 	// If company does not exists, company id remains null and company name remains what user provided
 	var er error
 	if er1 == nil {
-		currentCompanyId = company.Id
-		currentCompanyName = company.Name
+		companyId = company.ID
+		CompanyName = company.Name
 		verified = true
-		er = db.Where(&models.User{Id: id}).Updates(models.User{Email: userEmail.Email, CurrentCompanyName: currentCompanyName, CurrentCompanyId: currentCompanyId, Verified: &verified}).Error
+		er = db.Where(&models.User{ID: id}).Updates(models.User{Email: userEmail.Email, CompanyName: CompanyName, CompanyID: companyId, Verified: &verified}).Error
 	} else if errors.Is(er1, gorm.ErrRecordNotFound) {
 		verified = false
-		// fix this case to set currentcompanyid as nil
-		er = db.Where(&models.User{Id: id}).Updates(models.User{Email: userEmail.Email, CurrentCompanyId: -1, CurrentCompanyName: currentCompanyName, Verified: &verified}).Error
+		// fix this case to set companyId as nil
+		er = db.Where(&models.User{ID: id}).Updates(models.User{Email: userEmail.Email, CompanyID: 0, CompanyName: CompanyName, Verified: &verified}).Error
 	}
 	if er != nil {
 		return models.User{}, er
@@ -163,7 +149,7 @@ func UpdateUserPasswordById(db *gorm.DB, w http.ResponseWriter, id int, newPassw
 	// Hashing the password with the default cost of 10
 	hashedPassword, er := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
 	finalPassword := string(hashedPassword)
-	er = db.Where(&models.User{Id: id}).Updates(models.User{Password: finalPassword}).Error
+	er = db.Where(&models.User{ID: id}).Updates(models.User{Password: finalPassword}).Error
 	if er != nil {
 		return models.User{}, er
 	}

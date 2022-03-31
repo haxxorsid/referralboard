@@ -12,9 +12,9 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
-	"github.com/haxxorsid/referralboard/server/config"
-	"github.com/haxxorsid/referralboard/server/models"
-	"github.com/haxxorsid/referralboard/server/services"
+	"github.com/haxxorsid/referralboard-private/server/config"
+	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard-private/server/services"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
@@ -38,7 +38,7 @@ type credentials struct {
 // Create a struct that will be encoded to a JWT.
 // We add jwt.StandardClaims as an embedded type, to provide fields like expiry time
 type claims struct {
-	UserId int `json:"userId"`
+	UserID int `json:"userId"`
 	jwt.StandardClaims
 }
 
@@ -88,7 +88,6 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/validatelogin", a.ValidateLogin()).Methods("POST", "OPTIONS")
 
 	// Routes for user
-	a.Router.HandleFunc("/users", a.ValidateLogin(http.HandlerFunc(a.GetAllUsers))).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/users/id", a.ValidateLogin(http.HandlerFunc(a.GetUserById))).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/users/newuser", a.AddUser).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/users/id/updateprofile", a.ValidateLogin(http.HandlerFunc(a.UpdateUserProfileById))).Methods("POST", "OPTIONS")
@@ -96,10 +95,10 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/users/id/updatepassword", a.ValidateLogin(http.HandlerFunc(a.UpdateUserPasswordById))).Methods("POST", "OPTIONS")
 
 	// Routes for Posts
-	a.Router.HandleFunc("/posts", a.ValidateLogin(http.HandlerFunc(a.GetAllPosts))).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/posts/newpost", a.ValidateLogin(http.HandlerFunc(a.AddPost))).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/id/{id}", a.ValidateLogin(http.HandlerFunc(a.DeletePost))).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/userid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByUserId))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/posts/companyid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByCompanyId))).Methods("GET", "OPTIONS")
 
 	// Routes for Years of Experience
 	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
@@ -135,7 +134,7 @@ func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 		expirationTime := time.Now().Add(30 * time.Minute)
 		// Create the JWT claims, which includes the username and expiry time
 		claims := &claims{
-			UserId: user.Id,
+			UserID: user.ID,
 			StandardClaims: jwt.StandardClaims{
 				// In JWT, the expiry time is expressed as unix milliseconds
 				ExpiresAt: expirationTime.Unix(),
@@ -243,19 +242,13 @@ func (a *App) LogoutUser(w http.ResponseWriter, r *http.Request) {
 	})
 	services.RespondJSON(w, http.StatusOK, "Logged out the user")
 }
-
-// Wrap the get all post method
-func (a *App) GetAllPosts(w http.ResponseWriter, r *http.Request) {
-	services.GetAllPosts(a.DB, w, r)
-}
-
 // Wrap the add new post method
 func (a *App) AddPost(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	var post models.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
 	CheckError(err)
-	post.UserId = claims.UserId
+	post.UserID = claims.UserID
 	newPost, er := services.AddPost(a.DB, post)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add post")
@@ -277,15 +270,10 @@ func (a *App) DeletePost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the GET all Users method
-func (a *App) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	services.GetAllUsers(a.DB, w, r)
-}
-
 // Wrap the GET  User by Id method
 func (a *App) GetUserById(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
-	user, er := services.GetUserById(a.DB, claims.UserId)
+	user, er := services.GetUserById(a.DB, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch user")
 	} else {
@@ -317,8 +305,8 @@ func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 		// If company exists, overwrite user provided company name with name in the database and set company id
 		// If company does not exists, company id remains null and company name remains what user provided
 		if er1 == nil {
-			user.CurrentCompanyId = company.Id
-			user.CurrentCompanyName = company.Name
+			user.CompanyID = company.ID
+			user.CompanyName = company.Name
 			verified := true
 			user.Verified = &verified
 		}
@@ -336,7 +324,7 @@ func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	requestBody := json.NewDecoder(r.Body)
-	user, er := services.UpdateUserProfileById(a.DB, w, requestBody, claims.UserId)
+	user, er := services.UpdateUserProfileById(a.DB, w, requestBody, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user profile by id")
 	} else {
@@ -348,7 +336,7 @@ func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
 func (a *App) UpdateUserEmailById(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	requestBody := json.NewDecoder(r.Body)
-	user, er := services.UpdateUserEmailById(a.DB, w, requestBody, claims.UserId)
+	user, er := services.UpdateUserEmailById(a.DB, w, requestBody, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user email by id")
 	} else {
@@ -367,7 +355,7 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusBadRequest, "Structure of the request body is invalid")
 		return
 	}
-	user, er1 := services.GetUserById(a.DB, claims.UserId)
+	user, er1 := services.GetUserById(a.DB, claims.UserID)
 	if er1 != nil {
 		// If the structure of the body is wrong, return an HTTP error
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user password by id")
@@ -378,7 +366,7 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusUnauthorized, "Credentials invalid or some error occured")
 		return
 	}
-	updatedUser, er := services.UpdateUserPasswordById(a.DB, w, claims.UserId, userPassword.NewPassword)
+	updatedUser, er := services.UpdateUserPasswordById(a.DB, w, claims.UserID, userPassword.NewPassword)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user password by id")
 	} else {
@@ -399,11 +387,32 @@ func (a *App) GetAllCompanies(w http.ResponseWriter, r *http.Request) {
 // Wrap the GET User posts by user Id method
 func (a *App) GetPostsByUserId(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
-	posts, er := services.GetPostsByUserId(a.DB, claims.UserId)
+	posts, er := services.GetPostsByUserId(a.DB, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts of a user")
 	} else {
 		services.RespondJSON(w, http.StatusOK, posts)
+	}
+}
+
+// Wrap the GET User posts by company id
+func (a *App) GetPostsByCompanyId(w http.ResponseWriter, r *http.Request) {
+	claims := getTokenBody(r)
+	user, er := services.GetUserById(a.DB, claims.UserID)
+	if er != nil {
+		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch a user")
+	} else {
+		posts := []models.Post{}
+		if user.CompanyID == 0 {
+			services.RespondJSON(w, http.StatusOK, posts)
+		} else {
+			posts, er = services.GetPostsByCompanyId(a.DB, user.CompanyID)
+			if er != nil {
+				services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts by user's company")
+			} else {
+				services.RespondJSON(w, http.StatusOK, posts)
+			}
+		}
 	}
 }
 

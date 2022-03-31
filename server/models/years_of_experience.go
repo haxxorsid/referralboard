@@ -1,6 +1,6 @@
 package models
 
 type YearsOfExperience struct {
-	Id          int   `json:"yearsOfExperienceId" gorm:"primary_key;column:years_of_experience_id"`
+	ID          int   `json:"yearsOfExperienceId" gorm:"primary_key;`
 	Description string `json:"description"`
 }

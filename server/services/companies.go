@@ -3,7 +3,7 @@ package services
 import (
 	"net/http"
 
-	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard-private/server/models"
 	"gorm.io/gorm"
 )
 
@@ -24,6 +24,6 @@ func GetCompanyByDomain(db *gorm.DB, domain string) (models.Company, error) {
 // Fetch Company by id
 func GetCompanyById(db *gorm.DB, id int) (models.Company, error) {
 	var company models.Company
-	err := db.Where(&models.Company{Id: id}).First(&company).Error
+	err := db.Where(&models.Company{ID: id}).First(&company).Error
 	return company, err
 }

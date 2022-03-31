@@ -40,9 +40,9 @@ func TestAddUser(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company ABCD",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company ABCD",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress4@asd.com",
@@ -73,9 +73,9 @@ func TestInvalidEmail(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company ABCD",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company ABCD",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress4",
@@ -99,9 +99,9 @@ func TestUserRegistrationWithExistingCompany(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company A",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company A",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress2a@companya.com",
@@ -122,9 +122,9 @@ func TestUserRegistrationWithExistingCompany(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 
-	// fmt.Println("type: ", reflect.ValueOf(m["currentCompanyId"]).Kind())
-	if m["currentCompanyId"] != float64(1) {
-		t.Errorf("Expected current company ID expected to be <nil>. Got '%v'", m["currentCompanyId"])
+	// fmt.Println("type: ", reflect.ValueOf(m["CompanyId"]).Kind())
+	if m["CompanyId"] != float64(1) {
+		t.Errorf("Expected company ID expected to be <nil>. Got '%v'", m["CompanyId"])
 	}
 }
 
@@ -133,9 +133,9 @@ func TestUserRegistrationWithRandomCompany(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company ABCD",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company ABCD",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress2a@asd.com",
@@ -156,8 +156,8 @@ func TestUserRegistrationWithRandomCompany(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 
-	if m["currentCompanyId"] != float64(0) {
-		t.Errorf("Expected current comapny ID to be 0. Got '%v'", m["currentCompanyId"])
+	if m["CompanyId"] != float64(0) {
+		t.Errorf("Expected comapny ID to be 0. Got '%v'", m["CompanyId"])
 	}
 }
 
@@ -166,9 +166,9 @@ func TestNotUniqueEmail(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company A",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company A",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress2@companya.com",
@@ -192,9 +192,9 @@ func TestUserRegistrationWithExistingCompanyName(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		CurrentLocation:     "Mumbai",
-		CurrentCompanyName:  "Company A",
-		CurrentPosition:     "Software Engineer",
+		Location:     "Mumbai",
+		CompanyName:  "Company A",
+		Position:     "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceId: 1,
 		Email:               "mailaddress2ab@companya.com",
@@ -215,7 +215,7 @@ func TestUserRegistrationWithExistingCompanyName(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 
-	if m["currentCompanyName"] != "Company A" {
-		t.Errorf("Expected current comapny ID to be 0. Got '%v'", m["currentCompanyId"])
+	if m["CompanyName"] != "Company A" {
+		t.Errorf("Expected comapny ID to be 0. Got '%v'", m["CompanyId"])
 	}
 }

@@ -16,7 +16,7 @@ func (a *App) SetUpDB() {
 	a.DB.Migrator().DropTable(&models.YearsOfExperience{})
 
 	// Migrate the schema
-	a.DB.AutoMigrate(&models.YearsOfExperience{}, &models.Company{})
+	a.DB.AutoMigrate(&models.YearsOfExperience{}, &models.Company{}, &models.User{}, &models.Post{})
 	// Create Years of Experience table data
 	a.DB.Create(&models.YearsOfExperience{Description: "0 Years/Student/Intern"})
 	a.DB.Create(&models.YearsOfExperience{Description: "0 - 1 Years"})
@@ -35,14 +35,14 @@ func (a *App) SetUpDB() {
 	// Create User table data
 	password, _ := bcrypt.GenerateFromPassword([]byte("root"), bcrypt.DefaultCost)
 	verified := true
-	a.DB.Create(&models.User{FirstName: "Shashank", LastName: "Kumar", Email: "mailaddress2@companya.com", Password: string(password), CurrentLocation: "Florida", CurrentCompanyId: 1, CurrentCompanyName: "Company A", CurrentPosition: "Intern", YearsOfExperienceId: 1, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "John", LastName: "Doe", Email: "mailaddress1@companyb.com", Password: string(password), CurrentLocation: "California", CurrentCompanyId: 2, CurrentCompanyName: "Company B", CurrentPosition: "Intern", YearsOfExperienceId: 1, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "user3", LastName: "demo3", Email: "mailaddress3@companyc.com", Password: string(password), CurrentLocation: "California", CurrentCompanyId: 3, CurrentCompanyName: "Company C", CurrentPosition: "Software Engineer", YearsOfExperienceId: 2, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "user4", LastName: "demo4", Email: "mailaddress4@gmail.com", Password: string(password), CurrentLocation: "California", CurrentCompanyId: 1, CurrentCompanyName: "UF", CurrentPosition: "Student", YearsOfExperienceId: 3, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "Shashank", LastName: "Kumar", Email: "mailaddress2@companya.com", Password: string(password), Location: "Florida", CompanyID: 1, CompanyName: "Company A", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "John", LastName: "Doe", Email: "mailaddress1@companyb.com", Password: string(password), Location: "California", CompanyID: 2, CompanyName: "Company B", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "user3", LastName: "demo3", Email: "mailaddress3@companyc.com", Password: string(password), Location: "California", CompanyID: 3, CompanyName: "Company C", Position: "Software Engineer", YearsOfExperienceID: 2, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "user4", LastName: "demo4", Email: "mailaddress4@gmail.com", Password: string(password), Location: "California", CompanyID: 1, CompanyName: "UF", Position: "Student", YearsOfExperienceID: 3, School: "UF", Verified: &verified})
 
 	// Create Post table data
-	a.DB.Create(&models.Post{UserId: 1, TargetCompanyId: 2, TargetPosition: "Software Engineer", Message: "Message 1", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/123", CreatedAt: time.Now()})
-	a.DB.Create(&models.Post{UserId: 2, TargetCompanyId: 3, TargetPosition: "Software Engineer 2", Message: "Message 2", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/456", CreatedAt: time.Now()})
-	a.DB.Create(&models.Post{UserId: 1, TargetCompanyId: 3, TargetPosition: "Software Engineer", Message: "Message 3", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/567", CreatedAt: time.Now()})
+	a.DB.Create(&models.Post{UserID: 1, CompanyID: 2, Position: "Software Engineer", Message: "Message 1", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/123", CreatedAt: time.Now()})
+	a.DB.Create(&models.Post{UserID: 2, CompanyID: 3, Position: "Software Engineer 2", Message: "Message 2", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/456", CreatedAt: time.Now()})
+	a.DB.Create(&models.Post{UserID: 1, CompanyID: 3, Position: "Software Engineer", Message: "Message 3", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/567", CreatedAt: time.Now()})
 
 }

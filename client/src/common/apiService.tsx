@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { registerFormType, loginType, profileFormType, emailFormType, passwordFormType } from '../types';
+import { registerFormType, loginType, profileFormType, emailFormType, passwordFormType, createPostFormType } from '../types';
 
 const api = axios.create({
   withCredentials: true,
@@ -81,4 +81,17 @@ export function deletePostById(postId: number) {
   .then((res) => {
     return res.data
   });
+};
+
+export function getCompanies() {
+  return api.get('companies', {}).then((res) => {
+    return res.data
+  });
+};
+
+export function createPost(createPostFormValues: createPostFormType) {
+  return api.post('posts/newpost', createPostFormValues, {headers: {"Content-Type": "application/x-www-form-urlencoded"}})
+    .then((res) => {
+      return res.data
+    })
 };

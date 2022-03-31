@@ -135,7 +135,7 @@ func UpdateUserEmailById(db *gorm.DB, w http.ResponseWriter, requestBody *json.D
 	_, domain := emailParts[0], emailParts[1]
 	// Get company by domain
 	company, er1 := GetCompanyByDomain(db, domain)
-	currentCompanyId := currentUser.CurrentCompanyId
+	var currentCompanyId int //:= currentUser.CurrentCompanyId
 	currentCompanyName := currentUser.CurrentCompanyName
 	verified := *currentUser.Verified
 	// If company exists, overwrite user provided company name with name in the database and set company id
@@ -162,6 +162,9 @@ func UpdateUserPasswordById(db *gorm.DB, w http.ResponseWriter, id int, newPassw
 	password := []byte(newPassword)
 	// Hashing the password with the default cost of 10
 	hashedPassword, er := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)
+	if er != nil {
+		return models.User{}, er
+	}
 	finalPassword := string(hashedPassword)
 	er = db.Where(&models.User{Id: id}).Updates(models.User{Password: finalPassword}).Error
 	if er != nil {

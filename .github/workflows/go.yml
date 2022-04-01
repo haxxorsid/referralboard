@@ -49,5 +49,5 @@ jobs:
     - name: Run tests
       run: |
         cd server/app
-        export POSTGRES_URL="postgres://dwwpydmd:0ToWouIXm4uuWncxUbeNNN3zbmWoqU9l@castor.db.elephantsql.com/dwwpydmd"
+        export POSTGRES_URL=${{secrets.POSTGRES_URL}}
         go test -race -vet=off ./...

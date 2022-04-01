@@ -4,23 +4,25 @@
 
 CREATE TABLE IF NOT EXISTS app.users
 (
-    user_id bigint NOT NULL DEFAULT nextval('app.users_user_id_seq'::regclass),
+    id bigint NOT NULL DEFAULT nextval('app.users_id_seq'::regclass),
     first_name text COLLATE pg_catalog."default" NOT NULL,
     last_name text COLLATE pg_catalog."default" NOT NULL,
-    current_location text COLLATE pg_catalog."default" NOT NULL,
-    current_company_id bigint,
-    current_company_name text COLLATE pg_catalog."default" NOT NULL,
-    current_position text COLLATE pg_catalog."default" NOT NULL,
+    location text COLLATE pg_catalog."default" NOT NULL,
+    company_id bigint,
+    company_name text COLLATE pg_catalog."default" NOT NULL,
+    "position" text COLLATE pg_catalog."default" NOT NULL,
     school text COLLATE pg_catalog."default" NOT NULL,
     years_of_experience_id bigint NOT NULL,
     email text COLLATE pg_catalog."default" NOT NULL,
-    password_hash text COLLATE pg_catalog."default" NOT NULL,
+    password text COLLATE pg_catalog."default" NOT NULL,
     verified boolean NOT NULL DEFAULT false,
-    CONSTRAINT users_pkey PRIMARY KEY (user_id)
+    CONSTRAINT users_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
 
+ALTER TABLE IF EXISTS app.users
+    OWNER to siddhesh;
 -- Index: uq_users_email
 
 -- DROP INDEX IF EXISTS app.uq_users_email;

@@ -4,10 +4,10 @@
 
 CREATE TABLE IF NOT EXISTS app.companies
 (
-    company_id bigint NOT NULL DEFAULT nextval('app.companies_company_id_seq'::regclass),
+    id bigint NOT NULL DEFAULT nextval('app.companies_id_seq'::regclass),
     name text COLLATE pg_catalog."default",
     domain text COLLATE pg_catalog."default",
-    CONSTRAINT companies_pkey PRIMARY KEY (company_id)
+    CONSTRAINT companies_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;

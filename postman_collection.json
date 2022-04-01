@@ -95,25 +95,6 @@
 			"name": "Users",
 			"item": [
 				{
-					"name": "list users",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:5555/api/users",
-							"host": [
-								"localhost"
-							],
-							"port": "5555",
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "list user by id",
 					"protocolProfileBehavior": {
 						"disabledSystemHeaders": {}
@@ -312,25 +293,6 @@
 			"name": "Posts",
 			"item": [
 				{
-					"name": "list posts",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:5555/api/posts",
-							"host": [
-								"localhost"
-							],
-							"port": "5555",
-							"path": [
-								"api",
-								"posts"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "add post",
 					"request": {
 						"method": "POST",
@@ -401,6 +363,32 @@
 								"api",
 								"posts",
 								"userid"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list posts by user company",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:5555/api/posts/companyid",
+							"host": [
+								"localhost"
+							],
+							"port": "5555",
+							"path": [
+								"api",
+								"posts",
+								"companyid"
 							]
 						}
 					},

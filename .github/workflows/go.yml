@@ -1,0 +1,53 @@
+name: Go
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  audit:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+        
+    - name: Verify dependencies
+      run: |
+        cd server
+        go mod verify    
+    - name: Build
+      run: |
+        cd server
+        go build -v ./...
+    - name: Run go vet
+      run: |
+        cd server
+        go vet ./...
+    - name: Install staticcheck
+      run: |
+        cd server
+        go install honnef.co/go/tools/cmd/staticcheck@latest
+    - name: Run staticcheck
+      run: |
+        cd server
+        staticcheck ./...
+    - name: Install golint
+      run: |
+        cd server
+        go install golang.org/x/lint/golint@latest
+    - name: Run golint
+      run: |
+        cd server
+        golint ./...
+    - name: Run tests
+      run: |
+        cd server/app
+        export POSTGRES_URL=${{secrets.POSTGRES_URL}}
+        go test -race -vet=off ./...

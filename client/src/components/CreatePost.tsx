@@ -7,7 +7,7 @@ import Toast from './common/Toast';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { createPost, getCompanies } from '../common/apiService';
 import { createPostFormType, companyType } from '../types';
-import { isUrlText } from './common/customValidationRules';
+import { isUrlText } from '../common/customValidationRules';
 
 export default function CreatePost() {
 

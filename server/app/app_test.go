@@ -40,11 +40,11 @@ func TestAddUser(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company ABCD",
-		Position:     "Software Engineer",
+		Location:            "Mumbai",
+		CompanyName:         "Company ABCD",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress4@asd.com",
 		Password:            "root",
 	}
@@ -71,13 +71,13 @@ func TestAddUser(t *testing.T) {
 // invalid email
 func TestInvalidEmail(t *testing.T) {
 	testUsers := &models.User{
-		FirstName:           "Mallikaaa",
-		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company ABCD",
-		Position:     "Software Engineer",
+		FirstName:           "Dummy_FN",
+		LastName:            "Dummy_LN",
+		Location:            "Mumbai",
+		CompanyName:         "Company ABCD",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress4",
 		Password:            "root",
 	}
@@ -97,13 +97,13 @@ func TestInvalidEmail(t *testing.T) {
 // email is comapanyA -- success if companyId == 1
 func TestUserRegistrationWithExistingCompany(t *testing.T) {
 	testUsers := &models.User{
-		FirstName:           "Mallikaaa",
-		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company A",
-		Position:     "Software Engineer",
+		FirstName:           "Dummy_FirstName",
+		LastName:            "Dummy_LastName",
+		Location:            "Dummy_Location",
+		CompanyName:         "Company A",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress2a@companya.com",
 		Password:            "root",
 	}
@@ -122,8 +122,11 @@ func TestUserRegistrationWithExistingCompany(t *testing.T) {
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 
-	// fmt.Println("type: ", reflect.ValueOf(m["CompanyId"]).Kind())
-	if m["CompanyId"] != float64(1) {
+	// fmt.Println("response: ", m)
+	num := m["currentCompanyId"].(float64)
+	// fmt.Println("currentCompanyId: ", num)
+	// fmt.Println("type: ", reflect.ValueOf(m["[CompanyID"]).Kind(), ", value recieved: ", m["[CompanyID"])
+	if num != float64(1) {
 		t.Errorf("Expected company ID expected to be <nil>. Got '%v'", m["CompanyId"])
 	}
 }
@@ -133,11 +136,11 @@ func TestUserRegistrationWithRandomCompany(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company ABCD",
-		Position:     "Software Engineer",
+		Location:            "Mumbai",
+		CompanyName:         "Company ABCD",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress2a@asd.com",
 		Password:            "root",
 	}
@@ -155,8 +158,9 @@ func TestUserRegistrationWithRandomCompany(t *testing.T) {
 
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
+	num := m["currentCompanyId"].(float64)
 
-	if m["CompanyId"] != float64(0) {
+	if num != float64(0) {
 		t.Errorf("Expected comapny ID to be 0. Got '%v'", m["CompanyId"])
 	}
 }
@@ -166,11 +170,11 @@ func TestNotUniqueEmail(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company A",
-		Position:     "Software Engineer",
+		Location:            "Mumbai",
+		CompanyName:         "Company A",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress2@companya.com",
 		Password:            "root",
 	}
@@ -192,11 +196,11 @@ func TestUserRegistrationWithExistingCompanyName(t *testing.T) {
 	testUsers := &models.User{
 		FirstName:           "Mallikaaa",
 		LastName:            "Kumar",
-		Location:     "Mumbai",
-		CompanyName:  "Company A",
-		Position:     "Software Engineer",
+		Location:            "Mumbai",
+		CompanyName:         "Company A",
+		Position:            "Software Engineer",
 		School:              "University of Mumbai",
-		YearsOfExperienceId: 1,
+		YearsOfExperienceID: 1,
 		Email:               "mailaddress2ab@companya.com",
 		Password:            "root",
 	}
@@ -214,8 +218,9 @@ func TestUserRegistrationWithExistingCompanyName(t *testing.T) {
 
 	var m map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
+	companyName := m["currentCompanyName"].(string)
 
-	if m["CompanyName"] != "Company A" {
+	if companyName != "Company A" {
 		t.Errorf("Expected comapny ID to be 0. Got '%v'", m["CompanyId"])
 	}
 }

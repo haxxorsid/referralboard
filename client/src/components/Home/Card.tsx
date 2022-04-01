@@ -37,28 +37,28 @@ export default function ReferralCard(props: cardProps) {
             {props.post.targetPosition} at {props.post.company.name}
           </Typography>}
           {!props.self && <Typography gutterBottom variant="h5" component="span">
-            Student at UC Berkeley
+            {props.post.user.currentPosition} at {props.post.user.currentCompanyName}
           </Typography>}
-          <Button endIcon={<DeleteIcon />} size="large" onClick={() => {props.deletePost(props.post.postId)}}>
-          </Button>
+          {props.self && <Button endIcon={<DeleteIcon />} size="large" onClick={() => {props.deletePost(props.post.postId)}}>
+          </Button>}
         </Box>
         {!props.self && <Typography variant="body2" color="text.secondary">
-          Name: John Doe
+          Name: {props.post.user.firstName} {props.post.user.lastName}
         </Typography>}
         {!props.self && <Typography variant="body2" color="text.secondary">
-          Email: test@companya.com
+          Email: {props.post.user.email}
         </Typography>}
         {!props.self && <Typography variant="body2" color="text.secondary">
-          Current Location: Gainesville, Florida
+          Current Location: {props.post.user.currentLocation}
         </Typography>}
         {!props.self && <Typography variant="body2" color="text.secondary">
           Target Position: {props.post.targetPosition}
         </Typography>}
         {!props.self && <Typography variant="body2" color="text.secondary">
-          Years of Experience: 1-3 Years
+          Years of Experience: {props.post.user.yearsOfExperience.description}
         </Typography>}
         {!props.self && <Typography variant="body2" color="text.secondary">
-          School: University of Florida
+          School: {props.post.user.school}
         </Typography>}
         {props.self && <Typography variant="body2" color="text.secondary">
           Message from You: {props.post.message}
@@ -68,7 +68,6 @@ export default function ReferralCard(props: cardProps) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        {!props.self && <Button size="large" color="success">Reveal Candidate</Button>}
         <Button endIcon={<LinkIcon />} size="large" onClick={() => { window.open(props.post.resume, '_blank'); }}>
           Resume
         </Button>
@@ -88,7 +87,7 @@ export default function ReferralCard(props: cardProps) {
         <CardContent>
           <Typography paragraph>Message from Candidate:</Typography>
           <Typography variant="body2" color="text.secondary">
-            Gib job ples.
+          {props.post.message}
           </Typography>
         </CardContent>
       </Collapse>}

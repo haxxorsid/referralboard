@@ -5,7 +5,7 @@ import { CssBaseline, Typography, GlobalStyles, Container, Tabs, Tab} from '@mui
 import NavBar from '../NavBar';
 import Toast from '../common/Toast';
 import React, { useEffect } from 'react';
-import { getPostsByUserId, deletePostById } from '../../common/apiService';
+import { getPostsByUserId, getPostsByCompanyId, deletePostById } from '../../common/apiService';
 import { postType } from '../../types';
 
 export default function Home() {
@@ -22,8 +22,12 @@ export default function Home() {
       }).catch((error)=>{
         displayToast("error", error.message);
       });
-    } else {
-      setPosts([]);
+    } else if (value == 1) {
+      getPostsByCompanyId().then((res) => {
+        setPosts(res);
+      }).catch((error)=>{
+        displayToast("error", error.message);
+      });
     }
   }
 

@@ -13,7 +13,8 @@ export type postType = {
     resume: string,
     jobLink: string,
     createdAt: string,
-    company: companyType
+    company: companyType,
+    user: userType
 }
 
 export type experienceType = {
@@ -76,7 +77,8 @@ export type userType = {
     yearsOfExperienceId: number,
     email: string,
     password: string,
-    verified: boolean
+    verified: boolean,
+    yearsOfExperience: experienceType
 }
 
 export type createPostFormType = {

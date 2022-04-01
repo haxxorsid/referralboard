@@ -6,16 +6,6 @@ const api = axios.create({
   baseURL: 'http://localhost:5555/api/'
 });
 
-export function getPosts() {
-  return api.get('posts', {})
-    .then((res) => {
-      return res.data
-    })
-    .catch((error) => {
-      return error.message
-    })
-};
-
 export function getExperiences() {
   return api.get('experiences', {})
     .then((res) => {
@@ -71,6 +61,13 @@ export function updateUserPassword(passwordFormValues: passwordFormType) {
 
 export function getPostsByUserId() {
   return api.get('posts/userid', {})
+  .then((res) => {
+    return res.data
+  });
+};
+
+export function getPostsByCompanyId() {
+  return api.get('posts/companyid', {})
   .then((res) => {
     return res.data
   });

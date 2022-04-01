@@ -10,7 +10,8 @@ A referral network to get referral from verified professionals.
 ## Sprint Progress
 - [Sprint 1](./Sprint1.md)
 - [Sprint 2](./Sprint2.md)
-
+- [Sprint 3](./Sprint3.md)
+- 
 ## Wiki
 - [About the project](https://github.com/haxxorsid/referralboard/wiki)
 - [Setup project](https://github.com/haxxorsid/referralboard/wiki/Setup)

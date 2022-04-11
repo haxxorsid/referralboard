@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"github.com/haxxorsid/referralboard-private/server/config"
+	"github.com/haxxorsid/referralboard/server/config"
 	"github.com/haxxorsid/referralboard/server/models"
 )
 

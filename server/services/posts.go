@@ -35,15 +35,15 @@ func DeletePost(db *gorm.DB, id int) (models.Post, error) {
 }
 
 // GetPostsByUserID fetches posts based on UserId
-func GetPostsByUserID(db *gorm.DB, userId int) ([]models.Post, error) {
+func GetPostsByUserID(db *gorm.DB, userID int) ([]models.Post, error) {
 	var posts []models.Post
-	err := db.Where(&models.Post{UserID: userId}).Preload("Company").Order("created_at desc").Find(&posts).Error
+	err := db.Where(&models.Post{UserID: userID}).Preload("Company").Order("created_at desc").Find(&posts).Error
 	return posts, err
 }
 
 // GetPostsByCompanyID fetches posts based on CompanyId
-func GetPostsByCompanyID(db *gorm.DB, companyId int) ([]models.Post, error) {
+func GetPostsByCompanyID(db *gorm.DB, companyID int) ([]models.Post, error) {
 	var posts []models.Post
-	err := db.Where(&models.Post{CompanyID: companyId}).Preload("Company").Preload("User").Preload("User.YearsOfExperience").Order("created_at desc").Find(&posts).Error
+	err := db.Where(&models.Post{CompanyID: companyID}).Preload("Company").Preload("User").Preload("User.YearsOfExperience").Order("created_at desc").Find(&posts).Error
 	return posts, err
 }

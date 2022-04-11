@@ -16,6 +16,7 @@ import (
 	"github.com/haxxorsid/referralboard/server/models"
 	"github.com/haxxorsid/referralboard/server/services"
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -46,8 +47,11 @@ type claims struct {
 type Adapter func(http.Handler) http.Handler
 
 // Initialize method initializes with predefined configuration
-func (a *App) Initialize(config *config.Config) {
-	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+func (a *App) Initialize(config *config.Config, pg bool) {
+	var database *gorm.DB
+	var err error
+	if pg {
+		dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		config.DB.Host,
 		config.DB.User,
 		config.DB.Password,
@@ -56,11 +60,14 @@ func (a *App) Initialize(config *config.Config) {
 		config.DB.Sslmode,
 		config.DB.TimeZone)
 
-	database, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "app.", // schema name
-			SingularTable: false,
-		}})
+		database, err = gorm.Open(postgres.Open(dbURI), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix:   "app.", // schema name
+				SingularTable: false,
+			}})
+	} else {
+		database, err = gorm.Open(sqlite.Open("referralboard.db"), &gorm.Config{})
+	}
 
 	CheckError(err)
 	fmt.Println("Connected to db")

@@ -9,7 +9,7 @@ func main() {
 	config := config.GetConfig()
 
 	app := &app.App{}
-	app.Initialize(config)
+	app.Initialize(config, true)
 	app.SetUpDB()
 	app.Run(":5555")
 }

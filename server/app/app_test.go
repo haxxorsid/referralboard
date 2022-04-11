@@ -16,7 +16,7 @@ var a = &App{}
 
 func TestMain(m *testing.M) {
 	config := config.GetConfig()
- 	a.Initialize(config)
+ 	a.Initialize(config, false)
 	a.SetUpDB()
 	code := m.Run()
 	os.Exit(code)

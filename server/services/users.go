@@ -18,7 +18,7 @@ func validateUser(user models.User) error {
 	return err
 }
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func AddUser(db *gorm.DB, user models.User) (models.User, error) {
 func UpdateUserProfileByID(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
 	var userProfile models.UserProfile
 	err := requestBody.Decode(&userProfile)
-	CheckError(err)
+	checkError(err)
 	currentUser, err := GetUserByID(db, id)
 	if err != nil {
 		return models.User{}, err
@@ -111,7 +111,7 @@ func ValidateUserCredentials(db *gorm.DB, email string, password string) (bool, 
 func UpdateUserEmailByID(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
 	var userEmail models.UserEmail
 	err := requestBody.Decode(&userEmail)
-	CheckError(err)
+	checkError(err)
 	currentUser, err := GetUserByID(db, id)
 	if err != nil {
 		return models.User{}, err

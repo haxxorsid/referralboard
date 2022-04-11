@@ -24,21 +24,21 @@ func CheckError(err error) {
 	}
 }
 
-// Fetch User based on Email id
+// GetUserByEmail fetches a user based on Email
 func GetUserByEmail(db *gorm.DB, email string) (models.User, error) {
 	var user models.User
 	err := db.Where(&models.User{Email: email}).First(&user).Error
 	return user, err
 }
 
-// Fetch User based on User Id
+// GetUserById fetches a User based on UserID
 func GetUserById(db *gorm.DB, id int) (models.User, error) {
 	var user models.User
 	err := db.Where(&models.User{ID: id}).First(&user).Error
 	return user, err
 }
 
-// Add a user
+// AddUser creates a user
 func AddUser(db *gorm.DB, user models.User) (models.User, error) {
 	e := validateUser(user)
 	if e != nil {
@@ -62,8 +62,8 @@ func AddUser(db *gorm.DB, user models.User) (models.User, error) {
 	return GetUserByEmail(db, user.Email)
 }
 
-// Update user profile by Id
-func UpdateUserProfileById(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
+// UpdateUserProfileByID updates a user profile by UserID
+func UpdateUserProfileByID(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
 	var userProfile models.UserProfile
 	err := requestBody.Decode(&userProfile)
 	CheckError(err)
@@ -75,7 +75,7 @@ func UpdateUserProfileById(db *gorm.DB, w http.ResponseWriter, requestBody *json
 	if currentUser.CompanyID == 0 {
 		verified = false
 	} else {
-		company, e := GetCompanyById(db, currentUser.CompanyID)
+		company, e := GetCompanyByID(db, currentUser.CompanyID)
 		if e != nil {
 			return models.User{}, e
 		}
@@ -93,7 +93,7 @@ func UpdateUserProfileById(db *gorm.DB, w http.ResponseWriter, requestBody *json
 	return GetUserById(db, id)
 }
 
-// Check if password is valid for a particular email
+// ValidateUserCredentials checks if password is valid for a particular email
 func ValidateUserCredentials(db *gorm.DB, email string, password string) (bool, error) {
 	passwordByte := []byte(password)
 	user, e := GetUserByEmail(db, email)
@@ -107,8 +107,8 @@ func ValidateUserCredentials(db *gorm.DB, email string, password string) (bool, 
 	return false, e
 }
 
-// Update user email by Id
-func UpdateUserEmailById(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
+// UpdateUserEmailByID updates an user email by UserID
+func UpdateUserEmailByID(db *gorm.DB, w http.ResponseWriter, requestBody *json.Decoder, id int) (models.User, error) {
 	var userEmail models.UserEmail
 	err := requestBody.Decode(&userEmail)
 	CheckError(err)
@@ -143,8 +143,8 @@ func UpdateUserEmailById(db *gorm.DB, w http.ResponseWriter, requestBody *json.D
 	return GetUserById(db, id)
 }
 
-// Update user password by Id
-func UpdateUserPasswordById(db *gorm.DB, w http.ResponseWriter, id int, newPassword string) (models.User, error) {
+// UpdateUserPasswordByID updates user password by UserID
+func UpdateUserPasswordByID(db *gorm.DB, w http.ResponseWriter, id int, newPassword string) (models.User, error) {
 	password := []byte(newPassword)
 	// Hashing the password with the default cost of 10
 	hashedPassword, er := bcrypt.GenerateFromPassword(password, bcrypt.DefaultCost)

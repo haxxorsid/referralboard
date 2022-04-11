@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Get all experiences
+// GetAllExperiences fetches all experiences
 func GetAllExperiences(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	experiences := []models.YearsOfExperience{}
 	db.Find(&experiences)

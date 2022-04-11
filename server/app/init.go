@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// SetUpDB method creates database objects (tables in this case) with the required dummy data.
 func (a *App) SetUpDB() {
 
 	// Drop the table if it exists

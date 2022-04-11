@@ -1,9 +1,11 @@
 package config
 
+// Config struct is providing credentials for connecting with the database
 type Config struct {
 	DB *DBConfig
 }
 
+// DBConfig struct is providing credentials for connecting with the database
 type DBConfig struct {
 	Host     string
 	User     string
@@ -14,6 +16,7 @@ type DBConfig struct {
 	TimeZone string
 }
 
+// GetConfig method returns config with default credentials
 func GetConfig() *Config {
 	return &Config{
 		DB: &DBConfig{

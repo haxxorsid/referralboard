@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,10 +12,12 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
-	"github.com/haxxorsid/referralboard-private/server/models"
-	"github.com/haxxorsid/referralboard-private/server/services"
+	"github.com/haxxorsid/referralboard/server/config"
+	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard/server/services"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 // this should come from ENV or a configuration file
@@ -44,38 +45,9 @@ type claims struct {
 // Adapter is an alias so I dont have to type so much.
 type Adapter func(http.Handler) http.Handler
 
-// create connection with postgres db
-func createConnection() *gorm.DB {
-	// load .env file
-	// err := godotenv.Load(".env")
-
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file")
-	// }
-
-	// Open the connection
-	db, err := gorm.Open(postgres.Open(os.Getenv("POSTGRES_URL"))) //os.Getenv("POSTGRES_URL"))
-
-	if err != nil {
-		panic(err)
-	}
-
-	// check the connection
-	// err = db.//Ping()
-
-	// if err != nil {
-	// panic(err)
-	// }
-
-	fmt.Println("Successfully connected!")
-	// return the connection
-	return db
-}
-
-// App initialize with predefined configuration
-func (a *App) Initialize() { //config *config.Config) {
-	// fmt.Println(config.DB.Host, config.DB.Password)
-	/*dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+// Initialize method initializes with predefined configuration
+func (a *App) Initialize(config *config.Config) {
+	dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		config.DB.Host,
 		config.DB.User,
 		config.DB.Password,
@@ -90,10 +62,10 @@ func (a *App) Initialize() { //config *config.Config) {
 			SingularTable: false,
 		}})
 
-	CheckError(err)*/
+	CheckError(err)
 	fmt.Println("Connected to db")
 
-	a.DB = createConnection() //database
+	a.DB = database
 	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
 	a.setRouters()
 }

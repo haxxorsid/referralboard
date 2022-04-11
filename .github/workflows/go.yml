@@ -2,13 +2,16 @@ name: Go
 
 on:
   push:
-    branches: [main]
+    branches:    
+      - main
+      - 'release/**'
   pull_request:
-    branches: [main]
+    branches:    
+      - main
+      - 'release/**'
 
 jobs:
-
-  audit:
+  build:
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -49,5 +52,4 @@ jobs:
     - name: Run tests
       run: |
         cd server/app
-        export POSTGRES_URL=${{secrets.POSTGRES_URL}}
         go test -race -vet=off ./...

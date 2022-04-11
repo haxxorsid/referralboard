@@ -3,10 +3,11 @@ package app
 import (
 	"time"
 
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
+// SetUpDB method creates database objects (tables in this case) with the required dummy data.
 func (a *App) SetUpDB() {
 
 	// Drop the table if it exists

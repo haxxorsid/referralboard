@@ -1,14 +1,17 @@
 package main
 
 import (
-	"github.com/haxxorsid/referralboard-private/server/app"
+	"flag"
+	"github.com/haxxorsid/referralboard/server/app"
+	"github.com/haxxorsid/referralboard/server/config"
 )
 
 func main() {
-	// config := config.GetConfig()
+	config := config.GetConfig()
+	pgDb := flag.Bool("pgdb", true, "connect to a postgres database")
 
 	app := &app.App{}
-	app.Initialize() //config)
+	app.Initialize(config, *pgDb)
 	app.SetUpDB()
 	app.Run(":5555")
 }

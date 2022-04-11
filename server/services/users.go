@@ -85,7 +85,7 @@ func UpdateUserProfileByID(db *gorm.DB, w http.ResponseWriter, requestBody *json
 			verified = false
 		}
 	}
-	er := db.Where(&models.User{ID: id}).Updates(models.User{FirstName: userProfile.FirstName, LastName: userProfile.LastName, Location: userProfile.Location, CompanyName: userProfile.CompanyName, Position: userProfile.Position, YearsOfExperienceID: userProfile.YearsOfExperienceId, School: userProfile.School, Verified: &verified}).Error
+	er := db.Where(&models.User{ID: id}).Updates(models.User{FirstName: userProfile.FirstName, LastName: userProfile.LastName, Location: userProfile.Location, CompanyName: userProfile.CompanyName, Position: userProfile.Position, YearsOfExperienceID: userProfile.YearsOfExperienceID, School: userProfile.School, Verified: &verified}).Error
 	if er != nil {
 		return models.User{}, er
 	}

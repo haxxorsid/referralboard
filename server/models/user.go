@@ -26,7 +26,7 @@ type UserProfile struct {
 	CompanyName  		string `json:"currentCompanyName" validate:"required"`
 	Position     		string `json:"currentPosition" validate:"required"`
 	School              string `json:"school" validate:"required"`
-	YearsOfExperienceId int    `json:"yearsOfExperienceId" validate:"required"`	
+	YearsOfExperienceID int    `json:"yearsOfExperienceId" validate:"required"`	
 }
 
 // UserEmail is the entity for user email being received from the user for updation of user email

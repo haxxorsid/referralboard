@@ -8,15 +8,15 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-
+	"github.com/haxxorsid/referralboard-private/server/config"
 	"github.com/haxxorsid/referralboard/server/models"
 )
 
 var a = &App{}
 
 func TestMain(m *testing.M) {
-	// config := config.GetConfig()
-	a.Initialize() //config)
+	config := config.GetConfig()
+ 	a.Initialize(config)
 	a.SetUpDB()
 	code := m.Run()
 	os.Exit(code)

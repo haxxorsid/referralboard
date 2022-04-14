@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// Post is the entity for Post table
 type Post struct {
 	ID              int       `json:"postId" gorm:"primary_key;"`
 	UserID          int       `json:"userId"`

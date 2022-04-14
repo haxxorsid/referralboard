@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,10 +12,13 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
-	"github.com/haxxorsid/referralboard-private/server/models"
-	"github.com/haxxorsid/referralboard-private/server/services"
+	"github.com/haxxorsid/referralboard/server/config"
+	"github.com/haxxorsid/referralboard/server/models"
+	"github.com/haxxorsid/referralboard/server/services"
 	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
 // this should come from ENV or a configuration file
@@ -44,38 +46,12 @@ type claims struct {
 // Adapter is an alias so I dont have to type so much.
 type Adapter func(http.Handler) http.Handler
 
-// create connection with postgres db
-func createConnection() *gorm.DB {
-	// load .env file
-	// err := godotenv.Load(".env")
-
-	// if err != nil {
-	// 	log.Fatalf("Error loading .env file")
-	// }
-
-	// Open the connection
-	db, err := gorm.Open(postgres.Open(os.Getenv("POSTGRES_URL"))) //os.Getenv("POSTGRES_URL"))
-
-	if err != nil {
-		panic(err)
-	}
-
-	// check the connection
-	// err = db.//Ping()
-
-	// if err != nil {
-	// panic(err)
-	// }
-
-	fmt.Println("Successfully connected!")
-	// return the connection
-	return db
-}
-
-// App initialize with predefined configuration
-func (a *App) Initialize() { //config *config.Config) {
-	// fmt.Println(config.DB.Host, config.DB.Password)
-	/*dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+// Initialize method initializes with predefined configuration
+func (a *App) Initialize(config *config.Config, pg bool) {
+	var database *gorm.DB
+	var err error
+	if pg {
+		dbURI := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
 		config.DB.Host,
 		config.DB.User,
 		config.DB.Password,
@@ -84,21 +60,24 @@ func (a *App) Initialize() { //config *config.Config) {
 		config.DB.Sslmode,
 		config.DB.TimeZone)
 
-	database, err := gorm.Open(postgres.Open(dbURI), &gorm.Config{
-		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "app.", // schema name
-			SingularTable: false,
-		}})
+		database, err = gorm.Open(postgres.Open(dbURI), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix:   "app.", // schema name
+				SingularTable: false,
+			}})
+	} else {
+		database, err = gorm.Open(sqlite.Open("referralboard.db"), &gorm.Config{})
+	}
 
-	CheckError(err)*/
+	checkError(err)
 	fmt.Println("Connected to db")
 
-	a.DB = createConnection() //database
+	a.DB = database
 	a.Router = mux.NewRouter().PathPrefix("/api").Subrouter()
 	a.setRouters()
 }
 
-func CheckError(err error) {
+func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
@@ -115,17 +94,17 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/validatelogin", a.ValidateLogin()).Methods("POST", "OPTIONS")
 
 	// Routes for user
-	a.Router.HandleFunc("/users/id", a.ValidateLogin(http.HandlerFunc(a.GetUserById))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/users/id", a.ValidateLogin(http.HandlerFunc(a.GetUserByID))).Methods("GET", "OPTIONS")
 	a.Router.HandleFunc("/users/newuser", a.AddUser).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updateprofile", a.ValidateLogin(http.HandlerFunc(a.UpdateUserProfileById))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updateemail", a.ValidateLogin(http.HandlerFunc(a.UpdateUserEmailById))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/users/id/updatepassword", a.ValidateLogin(http.HandlerFunc(a.UpdateUserPasswordById))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updateprofile", a.ValidateLogin(http.HandlerFunc(a.UpdateUserProfileByID))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updateemail", a.ValidateLogin(http.HandlerFunc(a.UpdateUserEmailByID))).Methods("POST", "OPTIONS")
+	a.Router.HandleFunc("/users/id/updatepassword", a.ValidateLogin(http.HandlerFunc(a.UpdateUserPasswordByID))).Methods("POST", "OPTIONS")
 
 	// Routes for Posts
 	a.Router.HandleFunc("/posts/newpost", a.ValidateLogin(http.HandlerFunc(a.AddPost))).Methods("POST", "OPTIONS")
 	a.Router.HandleFunc("/posts/id/{id}", a.ValidateLogin(http.HandlerFunc(a.DeletePost))).Methods("POST", "OPTIONS")
-	a.Router.HandleFunc("/posts/userid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByUserId))).Methods("GET", "OPTIONS")
-	a.Router.HandleFunc("/posts/companyid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByCompanyId))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/posts/userid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByUserID))).Methods("GET", "OPTIONS")
+	a.Router.HandleFunc("/posts/companyid", a.ValidateLogin(http.HandlerFunc(a.GetPostsByCompanyID))).Methods("GET", "OPTIONS")
 
 	// Routes for Years of Experience
 	a.Router.HandleFunc("/experiences", a.GetAllExperiences).Methods("GET", "OPTIONS")
@@ -134,7 +113,7 @@ func (a *App) setRouters() {
 	a.Router.HandleFunc("/companies", a.ValidateLogin(http.HandlerFunc(a.GetAllCompanies))).Methods("GET", "OPTIONS")
 }
 
-// Method to login user by generating JWT Token and setting cookie
+// LoginUser method to login user by generating JWT Token and setting cookie
 func (a *App) LoginUser(w http.ResponseWriter, r *http.Request) {
 	var creds credentials
 	// Get the JSON body and decode into credentials
@@ -250,6 +229,7 @@ func getTokenBody(r *http.Request) *claims {
 	return claims
 }
 
+// LogoutUser method logs out the user by deleting the cookie
 func (a *App) LogoutUser(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	expirationTime := time.Now()
@@ -270,12 +250,12 @@ func (a *App) LogoutUser(w http.ResponseWriter, r *http.Request) {
 	services.RespondJSON(w, http.StatusOK, "Logged out the user")
 }
 
-// Wrap the add new post method
+// AddPost wraps the add new post method
 func (a *App) AddPost(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	var post models.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
-	CheckError(err)
+	checkError(err)
 	post.UserID = claims.UserID
 	newPost, er := services.AddPost(a.DB, post)
 	if er != nil {
@@ -285,11 +265,11 @@ func (a *App) AddPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the delete post method
+// DeletePost wraps the delete post method
 func (a *App) DeletePost(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id, err := strconv.Atoi(params["id"])
-	CheckError(err)
+	checkError(err)
 	post, er := services.DeletePost(a.DB, id)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error while trying to delete post")
@@ -298,10 +278,10 @@ func (a *App) DeletePost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the GET  User by Id method
-func (a *App) GetUserById(w http.ResponseWriter, r *http.Request) {
+// GetUserByID wraps the GET  User by Id method
+func (a *App) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
-	user, er := services.GetUserById(a.DB, claims.UserID)
+	user, er := services.GetUserByID(a.DB, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch user")
 	} else {
@@ -309,18 +289,18 @@ func (a *App) GetUserById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Email validation
+// isEmailValid is for Email validation
 func isEmailValid(e string) bool {
 	emailRegex := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return emailRegex.MatchString(e)
 }
 
-// Wrap the POST User method
+// AddUser wraps the POST User method
 func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	// fmt.Println(json.NewDecoder(r.Body))
 	err := json.NewDecoder(r.Body).Decode(&user)
-	CheckError(err)
+	checkError(err)
 	// Check if email is valid
 	if !isEmailValid(user.Email) {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to add user - email is not valid")
@@ -348,11 +328,11 @@ func (a *App) AddUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the update user method
-func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
+// UpdateUserProfileByID wraps the update user method
+func (a *App) UpdateUserProfileByID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	requestBody := json.NewDecoder(r.Body)
-	user, er := services.UpdateUserProfileById(a.DB, w, requestBody, claims.UserID)
+	user, er := services.UpdateUserProfileByID(a.DB, w, requestBody, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user profile by id")
 	} else {
@@ -360,11 +340,11 @@ func (a *App) UpdateUserProfileById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the update user method
-func (a *App) UpdateUserEmailById(w http.ResponseWriter, r *http.Request) {
+// UpdateUserEmailByID wraps the update user method
+func (a *App) UpdateUserEmailByID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	requestBody := json.NewDecoder(r.Body)
-	user, er := services.UpdateUserEmailById(a.DB, w, requestBody, claims.UserID)
+	user, er := services.UpdateUserEmailByID(a.DB, w, requestBody, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user email by id")
 	} else {
@@ -372,8 +352,8 @@ func (a *App) UpdateUserEmailById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the update user method
-func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
+// UpdateUserPasswordByID wraps the update user method
+func (a *App) UpdateUserPasswordByID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
 	var userPassword models.UserPassword
 	// Get the JSON body and decode into credentials
@@ -383,7 +363,7 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusBadRequest, "Structure of the request body is invalid")
 		return
 	}
-	user, er1 := services.GetUserById(a.DB, claims.UserID)
+	user, er1 := services.GetUserByID(a.DB, claims.UserID)
 	if er1 != nil {
 		// If the structure of the body is wrong, return an HTTP error
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user password by id")
@@ -394,7 +374,7 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 		services.RespondError(w, http.StatusUnauthorized, "Credentials invalid or some error occured")
 		return
 	}
-	updatedUser, er := services.UpdateUserPasswordById(a.DB, w, claims.UserID, userPassword.NewPassword)
+	updatedUser, er := services.UpdateUserPasswordByID(a.DB, w, claims.UserID, userPassword.NewPassword)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to update user password by id")
 	} else {
@@ -402,20 +382,20 @@ func (a *App) UpdateUserPasswordById(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the GET all Experiences method
+// GetAllExperiences wraps the GET all Experiences method
 func (a *App) GetAllExperiences(w http.ResponseWriter, r *http.Request) {
 	services.GetAllExperiences(a.DB, w, r)
 }
 
-// Wrap the GET all Companies method
+// GetAllCompanies wraps the GET all Companies method
 func (a *App) GetAllCompanies(w http.ResponseWriter, r *http.Request) {
 	services.GetAllCompanies(a.DB, w, r)
 }
 
-// Wrap the GET User posts by user Id method
-func (a *App) GetPostsByUserId(w http.ResponseWriter, r *http.Request) {
+// GetPostsByUserID wraps the GET posts by user Id method
+func (a *App) GetPostsByUserID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
-	posts, er := services.GetPostsByUserId(a.DB, claims.UserID)
+	posts, er := services.GetPostsByUserID(a.DB, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts of a user")
 	} else {
@@ -423,10 +403,10 @@ func (a *App) GetPostsByUserId(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Wrap the GET User posts by company id
-func (a *App) GetPostsByCompanyId(w http.ResponseWriter, r *http.Request) {
+// GetPostsByCompanyID wraps the GET posts by company id
+func (a *App) GetPostsByCompanyID(w http.ResponseWriter, r *http.Request) {
 	claims := getTokenBody(r)
-	user, er := services.GetUserById(a.DB, claims.UserID)
+	user, er := services.GetUserByID(a.DB, claims.UserID)
 	if er != nil {
 		services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch a user")
 	} else {
@@ -434,7 +414,7 @@ func (a *App) GetPostsByCompanyId(w http.ResponseWriter, r *http.Request) {
 		if user.CompanyID == 0 {
 			services.RespondJSON(w, http.StatusOK, posts)
 		} else {
-			posts, er = services.GetPostsByCompanyId(a.DB, user.CompanyID)
+			posts, er = services.GetPostsByCompanyID(a.DB, user.CompanyID)
 			if er != nil {
 				services.RespondError(w, http.StatusBadRequest, "Error occured while trying to fetch posts by user's company")
 			} else {

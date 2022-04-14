@@ -1,5 +1,6 @@
 package models
 
+// User is the entity for User table
 type User struct {
 	ID                  int    `json:"userId" gorm:"primary_key;not null"`
 	FirstName           string `json:"firstName" gorm:"not null;default:null" validate:"required"`
@@ -17,6 +18,7 @@ type User struct {
 	YearsOfExperience   YearsOfExperience `json:"yearsOfExperience,omitempty"`
 }
 
+// UserProfile is the entity for user profile details being received from the user for updation of user details
 type UserProfile struct {
 	FirstName           string `json:"firstName" validate:"required"`
 	LastName            string `json:"lastName" validate:"required"`
@@ -24,13 +26,15 @@ type UserProfile struct {
 	CompanyName  		string `json:"currentCompanyName" validate:"required"`
 	Position     		string `json:"currentPosition" validate:"required"`
 	School              string `json:"school" validate:"required"`
-	YearsOfExperienceId int    `json:"yearsOfExperienceId" validate:"required"`	
+	YearsOfExperienceID int    `json:"yearsOfExperienceId" validate:"required"`	
 }
 
+// UserEmail is the entity for user email being received from the user for updation of user email
 type UserEmail struct {
 	Email               string `json:"email" validate:"required,email"`
 }
 
+// UserPassword is the entity for user password being received from the user for updation of user password
 type UserPassword struct {
 	CurrentPassword     string `json:"currentPassword" validate:"required"`
 	NewPassword         string `json:"newPassword" validate:"required"`

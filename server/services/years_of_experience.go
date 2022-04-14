@@ -3,11 +3,11 @@ package services
 import (
 	"net/http"
 
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/models"
 	"gorm.io/gorm"
 )
 
-// Get all experiences
+// GetAllExperiences fetches all experiences
 func GetAllExperiences(db *gorm.DB, w http.ResponseWriter, r *http.Request) {
 	experiences := []models.YearsOfExperience{}
 	db.Find(&experiences)

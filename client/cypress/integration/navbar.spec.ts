@@ -1,10 +1,10 @@
 describe('Navbar', () => {
-    var existingEmail = "mailaddress3@companyc.com";
-    var correctPassword = 'root';
+    var email = "mailaddress3@companyc.com";
+    var password = 'root';
     beforeEach(() => {
         cy.visit(Cypress.config().baseUrl + "/login");
-        cy.get('input[name="email"]').type(existingEmail);
-        cy.get('input[name="password"]').type(correctPassword);
+        cy.get('input[name="email"]').type(email);
+        cy.get('input[name="password"]').type(password);
 
         cy.get('button:contains("Sign In")')
             .click();
@@ -13,6 +13,10 @@ describe('Navbar', () => {
     it('navbar exists', () => {
         cy.get('header')
             .should('exist');
+        cy.visit(Cypress.config().baseUrl + "/edit-profile");
+        cy.get('header').should('exist');
+        cy.visit(Cypress.config().baseUrl + "/create-post");
+        cy.get('header').should('exist');
     });
 
     it('contains visual elements', () => {

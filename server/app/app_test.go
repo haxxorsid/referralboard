@@ -19,7 +19,7 @@ var a = &App{}
 
 func TestMain(m *testing.M) {
 	config := config.GetConfig()
-	pgDb := flag.Bool("pgdb", true, "connect to a postgres database")
+	pgDb := flag.Bool("pgdb", false, "connect to a postgres database")
 	a.Initialize(config, *pgDb)
 	a.SetUpDB()
 	code := m.Run()

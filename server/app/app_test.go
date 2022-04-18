@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"testing"
@@ -10,14 +11,16 @@ import (
 	"net/http"
 	"net/http/httptest"
 
-	"github.com/haxxorsid/referralboard-private/server/models"
+	"github.com/haxxorsid/referralboard/server/config"
+	"github.com/haxxorsid/referralboard/server/models"
 )
 
 var a = &App{}
 
 func TestMain(m *testing.M) {
-	// config := config.GetConfig()
-	a.Initialize() //config)
+	config := config.GetConfig()
+	pgDb := flag.Bool("pgdb", true, "connect to a postgres database")
+	a.Initialize(config, *pgDb)
 	a.SetUpDB()
 	code := m.Run()
 	os.Exit(code)
@@ -110,7 +113,7 @@ func TestUpdateUserProfileById(t *testing.T) {
 		CompanyName:         "Company C",
 		Position:            "Software Engineer",
 		School:              "University of Florida",
-		YearsOfExperienceId: 2,
+		YearsOfExperienceID: 2,
 	}
 
 	userformValue, _ := json.Marshal(updateForm)
@@ -145,7 +148,7 @@ func TestUpdateUserProfileByIdWithInvalidSession(t *testing.T) {
 		CompanyName:         "Company C",
 		Position:            "Software Engineer",
 		School:              "University of Florida",
-		YearsOfExperienceId: 2,
+		YearsOfExperienceID: 2,
 	}
 
 	userformValue, _ := json.Marshal(updateForm)

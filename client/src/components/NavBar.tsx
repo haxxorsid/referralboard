@@ -10,9 +10,9 @@ export default function NavBar() {
 
   const logout = () => {
     auth.signout(() => {
-      navigate("/logout");
+      navigate("/login");
     }, (_error: any) => {
-      navigate("/logout");
+      navigate("/login");
     });
   };
 

@@ -1,5 +1,5 @@
 describe('Navbar', () => {
-    var existingEmail = "mailaddress3@companyc.com";
+    var existingEmail = "mailaddress1@companya.com";
     var correctPassword = 'root';
     beforeEach(() => {
         cy.visit(Cypress.config().baseUrl + "/login");
@@ -42,7 +42,7 @@ describe('Navbar', () => {
         cy.location('pathname').should('eq', '/edit-profile');
 
         cy.get('a[href="/create-post"]')
-        .click();
+            .click();
         cy.location('pathname').should('eq', '/create-post');
     });
 

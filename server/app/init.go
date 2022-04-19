@@ -36,14 +36,15 @@ func (a *App) SetUpDB() {
 	// Create User table data
 	password, _ := bcrypt.GenerateFromPassword([]byte("root"), bcrypt.DefaultCost)
 	verified := true
-	a.DB.Create(&models.User{FirstName: "Shashank", LastName: "Kumar", Email: "mailaddress2@companya.com", Password: string(password), Location: "Florida", CompanyID: 1, CompanyName: "Company A", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "John", LastName: "Doe", Email: "mailaddress1@companyb.com", Password: string(password), Location: "California", CompanyID: 2, CompanyName: "Company B", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "user3", LastName: "demo3", Email: "mailaddress3@companyc.com", Password: string(password), Location: "California", CompanyID: 3, CompanyName: "Company C", Position: "Software Engineer", YearsOfExperienceID: 2, School: "UF", Verified: &verified})
-	a.DB.Create(&models.User{FirstName: "user4", LastName: "demo4", Email: "mailaddress4@gmail.com", Password: string(password), Location: "California", CompanyID: 1, CompanyName: "UF", Position: "Student", YearsOfExperienceID: 3, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "Firstname1", LastName: "Lastname1", Email: "mailaddress1@companya.com", Password: string(password), Location: "Florida", CompanyID: 1, CompanyName: "Company A", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "Firstname2", LastName: "Lastname2", Email: "mailaddress2@companyb.com", Password: string(password), Location: "California", CompanyID: 2, CompanyName: "Company B", Position: "Intern", YearsOfExperienceID: 1, School: "UF", Verified: &verified})
+	a.DB.Create(&models.User{FirstName: "Firstname3", LastName: "Lastname3", Email: "mailaddress3@companyc.com", Password: string(password), Location: "California", CompanyID: 3, CompanyName: "Company C", Position: "Software Engineer", YearsOfExperienceID: 2, School: "UF", Verified: &verified})
+	verified = false
+	a.DB.Create(&models.User{FirstName: "Firstname4", LastName: "Lastname4", Email: "mailaddress4@gmail.com", Password: string(password), Location: "California", CompanyName: "Company D", Position: "Student", YearsOfExperienceID: 3, School: "UF", Verified: &verified})
 
 	// Create Post table data
 	a.DB.Create(&models.Post{UserID: 1, CompanyID: 2, Position: "Software Engineer", Message: "Message 1", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/123", CreatedAt: time.Now()})
-	a.DB.Create(&models.Post{UserID: 2, CompanyID: 3, Position: "Software Engineer 2", Message: "Message 2", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/456", CreatedAt: time.Now()})
-	a.DB.Create(&models.Post{UserID: 1, CompanyID: 3, Position: "Software Engineer", Message: "Message 3", Resume: "https://www.google.com", JobLink: "https://www.companyb.com/jobid/567", CreatedAt: time.Now()})
-
+	a.DB.Create(&models.Post{UserID: 2, CompanyID: 3, Position: "Software Engineer 2", Message: "Message 2", Resume: "https://www.google.com", JobLink: "https://www.companyc.com/jobid/123", CreatedAt: time.Now()})
+	a.DB.Create(&models.Post{UserID: 1, CompanyID: 4, Position: "Software Engineer", Message: "Message 3", Resume: "https://www.google.com", JobLink: "https://www.companyc.com/jobid/456", CreatedAt: time.Now()})
+	a.DB.Create(&models.Post{UserID: 4, CompanyID: 1, Position: "Product Manager", Message: "Message 4", Resume: "https://www.google.com", JobLink: "https://www.companya.com/jobid/123", CreatedAt: time.Now()})
 }

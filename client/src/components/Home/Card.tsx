@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { Card, CardActions, CardContent, Button, Typography, Collapse, IconButton, IconButtonProps, Box } from '@mui/material';
+import { Card, CardActions, CardContent, Button, Typography, Collapse, IconButton, IconButtonProps, Box, Tooltip } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 import LinkIcon from '@mui/icons-material/Link';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Link as RouterLink } from 'react-router-dom';
 import { cardProps } from '../../types';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
@@ -33,13 +34,21 @@ export default function ReferralCard(props: cardProps) {
     <Card sx={{ mt: 1, width: '100%' }} >
       <CardContent>
         <Box sx={{ justifyContent: 'space-between', display: 'flex', }}>
-          {props.self && <Typography gutterBottom variant="h5" component="span">
+          {props.self && <Tooltip title="Target position and company" placement="top-end">
+            <Typography gutterBottom variant="h5" component="span">
             {props.post.targetPosition} at {props.post.company.name}
-          </Typography>}
+          </Typography></Tooltip>}
           {!props.self && <Typography gutterBottom variant="h5" component="span">
-            {props.post.user.currentPosition} at {props.post.user.currentCompanyName}
+            <Tooltip title="Current position and company" placement="top-end">
+              <span>{props.post.user.currentPosition} at {props.post.user.currentCompanyName}</span>
+              </Tooltip>
+            {props.post.user.verified && <Tooltip title="This user is verified" placement="top-end">
+              <IconButton>
+                <VerifiedIcon color="success" />
+              </IconButton>
+            </Tooltip>}
           </Typography>}
-          {props.self && <Button endIcon={<DeleteIcon />} size="large" onClick={() => {props.deletePost(props.post.postId)}}>
+          {props.self && <Button endIcon={<DeleteIcon />} size="large" onClick={() => { props.deletePost(props.post.postId) }}>
           </Button>}
         </Box>
         {!props.self && <Typography variant="body2" color="text.secondary">
@@ -87,7 +96,7 @@ export default function ReferralCard(props: cardProps) {
         <CardContent>
           <Typography paragraph>Message from Candidate:</Typography>
           <Typography variant="body2" color="text.secondary">
-          {props.post.message}
+            {props.post.message}
           </Typography>
         </CardContent>
       </Collapse>}

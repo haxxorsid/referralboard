@@ -1,5 +1,5 @@
 describe('Navbar', () => {
-    var existingEmail = "mailaddress1@companya.com";
+    var existingEmail = "mailaddress4@gmail.com"
     var correctPassword = 'root';
     beforeEach(() => {
         cy.visit(Cypress.config().baseUrl + "/login");

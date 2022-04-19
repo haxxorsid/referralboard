@@ -66,7 +66,7 @@ func TestUserLoginWrongCredentials(t *testing.T) {
 // unit test for user login with valid credentials
 func TestUserLogin(t *testing.T) {
 	cred := credentials{
-		"mailaddress2@companya.com",
+		"mailaddress1@companya.com",
 		"root",
 	}
 	loginformValues, _ := json.Marshal(cred)

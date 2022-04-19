@@ -367,7 +367,7 @@ func TestGetPostsByCompanyId(t *testing.T) {
 	var m []map[string]interface{}
 	json.Unmarshal(response.Body.Bytes(), &m)
 	fmt.Println("Number of posts: ", len(m))
-	if len(m) != 1 {
+	if len(m) != 2 {
 		t.Errorf("Fetch post by user's company id failed")
 	}
 }
@@ -603,7 +603,7 @@ func TestNotUniqueEmail(t *testing.T) {
 		Position:            "Software Engineer",
 		School:              "University of Mumbai",
 		YearsOfExperienceID: 1,
-		Email:               "mailaddress1@companyb.com",
+		Email:               "mailaddress2@companyb.com",
 		Password:            "root",
 	}
 	userformValue, _ := json.Marshal(testUsers)

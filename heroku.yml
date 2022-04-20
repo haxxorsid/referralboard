@@ -1,5 +1,0 @@
-build:
-  docker:
-    web: Dockerfile
-    worker:
-       dockerfile: Dockerfile

@@ -48,14 +48,13 @@ As we struggle to find internships, full-time employment or new opportunities at
 ## Demo Videos
 - Application Demo
 
-https://user-images.githubusercontent.com/13928803/164122090-02526b5a-6156-4cd7-b94c-826d55dfa05d.mp4
+https://user-images.githubusercontent.com/13928803/164123463-4a6405a3-3a5d-4f1b-b69c-dc4d6c122a29.mp4
 - Cypress integration tests demo
 
 https://user-images.githubusercontent.com/13928803/164122109-168fe85b-d59a-4d7f-8122-c245f487d29a.mov
 - Backend Unit testing demo
 
-https://user-images.githubusercontent.com/13928803/164122408-efac0607-8058-4ca9-b2a1-809e84014057.mp4
-
+https://user-images.githubusercontent.com/13928803/164123931-475cf390-a7ad-4422-9780-f757c6c2b751.mp4
 
 ## Wiki
 - [About the project](https://github.com/haxxorsid/referralboard/wiki)

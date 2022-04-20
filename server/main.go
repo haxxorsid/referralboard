@@ -8,7 +8,7 @@ import (
 
 func main() {
 	config := config.GetConfig()
-	pgDb := flag.Bool("pgdb", true, "connect to a postgres database")
+	pgDb := flag.Bool("pgdb", false, "connect to a postgres database")
 
 	app := &app.App{}
 	app.Initialize(config, *pgDb)

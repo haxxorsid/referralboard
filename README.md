@@ -45,6 +45,18 @@ As we struggle to find internships, full-time employment or new opportunities at
 - [Sprint 3](./Sprint3.md)
 - [Sprint 4](./Sprint4.md)
 
+## Demo Videos
+- Application Demo
+
+https://user-images.githubusercontent.com/13928803/164122090-02526b5a-6156-4cd7-b94c-826d55dfa05d.mp4
+- Cypress integration tests demo
+
+https://user-images.githubusercontent.com/13928803/164122109-168fe85b-d59a-4d7f-8122-c245f487d29a.mov
+- Backend Unit testing demo
+
+https://user-images.githubusercontent.com/13928803/164122408-efac0607-8058-4ca9-b2a1-809e84014057.mp4
+
+
 ## Wiki
 - [About the project](https://github.com/haxxorsid/referralboard/wiki)
 - [Setup project](https://github.com/haxxorsid/referralboard/wiki/Setup)
